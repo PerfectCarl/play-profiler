@@ -5,14 +5,18 @@ import java.lang.reflect.Method;
 import play.Logger;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
+import play.modules.miniprofiler.enhancer.ProfilerEnhancer;
 import play.mvc.Http.Request;
+import play.mvc.Router;
 import play.mvc.Router.Route;
 
 public class MiniProfilerPlugin extends PlayPlugin {
 
+    ProfilerEnhancer enhancer = new ProfilerEnhancer();
+
     @Override
     public void enhance(ApplicationClass applicationClass) throws Exception {
-        super.enhance(applicationClass);
+        enhancer.enhanceThisClass(applicationClass);
     }
 
     @Override
@@ -48,6 +52,12 @@ public class MiniProfilerPlugin extends PlayPlugin {
     public void afterActionInvocation() {
         super.afterActionInvocation();
         Logger.info("afterActionInvocation ");
+
+    }
+
+    @Override
+    public void onRoutesLoaded() {
+        Router.addRoute("GET", "/_profiler", "MiniProfilerActions.index");
     }
 
     @Override

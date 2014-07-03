@@ -4,5 +4,3 @@
 # *     /                       module:mini-profiler
 #
 # ~~~~
-
-GET     /?                      Module.index
