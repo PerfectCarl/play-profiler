@@ -1,1 +1,5 @@
 h1. play-mini-profiler
+
+Based on [java-mini-profiler](https://github.com/alvins82/java-mini-profiler-core)
+
+[discussion here](https://groups.google.com/forum/#!topic/play-framework/OvSGAFiVEZM)
