@@ -1,0 +1,4 @@
+self: play -> mini-profiler 0.1
+
+require:
+    - play

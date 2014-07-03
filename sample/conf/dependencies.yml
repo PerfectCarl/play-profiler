@@ -1,0 +1,12 @@
+# Application dependencies
+
+require:
+    - play
+    - customModules -> mini-profiler
+
+repositories:        
+    - playCustomModules:
+        type: local
+        artifact: "C:/Users/cran/Dropbox/docs/projects/github/play/play-mini-profiler"
+        contains:
+            - customModules -> *    
