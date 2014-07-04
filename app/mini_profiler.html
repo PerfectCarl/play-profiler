@@ -1,14 +1,13 @@
-AAAAAAAAAAAAAAAAA
-<link rel="stylesheet" type="text/css" href="@@baseURL@@resource?id=mini_profiler.css">
+<link rel="stylesheet" type="text/css" href="/@profiler/public/mini_profiler.css">
 
 <!-- miniprofiler js start -->
-<script type="text/javascript" src="@@baseURL@@resource?id=jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="@@baseURL@@resource?id=mini_profiler.js"></script>
+<script type="text/javascript" src="/@profiler/public/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="/@profiler/public/mini_profiler.js"></script>
 <script type="text/javascript">
 	jQuery(function() {
 		MiniProfiler.init({
 			requestId : '@@requestId@@',
-			baseURL : '@@baseURL@@'
+			baseURL : '/@profiler/'
 		});
 	});
 </script>

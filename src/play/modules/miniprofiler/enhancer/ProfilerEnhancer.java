@@ -150,6 +150,9 @@ public class ProfilerEnhancer extends Enhancer {
             addHeader(request, REQUEST_BASE_URL, servletURL);
             addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
             addHeader(request, INCLUDES_ATTRIBUTE, result);
+            play.mvc.Scope.Session.current().put(INCLUDES_ATTRIBUTE, result);
+            play.mvc.Scope.Flash.current().put(INCLUDES_ATTRIBUTE, result);
+
         }
     }
 

@@ -1,6 +1,10 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
+#{set 'moreScripts'}
+	${flash.get("mini_profile_includes").raw()}     
+#{/set}
 
-mini_profile_includes
+*{ ${request.mini_profile_includes} }*
 
-HELLO
+
+FRANCK

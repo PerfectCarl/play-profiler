@@ -21,7 +21,7 @@ public class MiniProfilerActions extends Controller {
     /** The cache Service */
     static private CacheProfilerService cacheProfilerService = new CacheProfilerService();
 
-    static public void index()
+    static public void results()
     {
         Map<String, Object> result = new HashMap<String, Object>();
 
