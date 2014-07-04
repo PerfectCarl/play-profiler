@@ -7,12 +7,12 @@ var MiniProfiler = ( function() {
   function init( options ) {
     baseURL = options.baseURL;
 
-    $( document.body ).append( '<div id="@@prefix@@" style="display: none;"></div><div id="@@prefix@@-req" style="display: none;"></div>' );
+    $( document.body ).append( '<div id="mp" style="display: none;"></div><div id="mp-req" style="display: none;"></div>' );
 
     // Initialize the HTML templates
-    $.template( 'requestTemplate', $( '#@@prefix@@-request-tmpl' ).html() );
-    $.template( 'resultTemplate', $( '#@@prefix@@-result-tmpl' ).html() );
-    $.template( 'resultTreeTemplate', $( '#@@prefix@@-result-tree-tmpl' ).html() );
+    $.template( 'requestTemplate', $( '#mp-request-tmpl' ).html() );
+    $.template( 'resultTemplate', $( '#mp-result-tmpl' ).html() );
+    $.template( 'resultTreeTemplate', $( '#mp-result-tree-tmpl' ).html() );
 
     var requestIds = getRedirectRequests( window.location.href );
     requestIds.push( options.requestId );
@@ -30,7 +30,7 @@ var MiniProfiler = ( function() {
     } );
 
     // Display profile details when one of the request times is clicked on
-    $( '#@@prefix@@' ).delegate( 'a', 'click', displayProfileDetails );
+    $( '#mp' ).delegate( 'a', 'click', displayProfileDetails );
   }
 
   /**
@@ -65,9 +65,9 @@ var MiniProfiler = ( function() {
             var request = requests[ i ];
             request.timestampFormatted = new Date( request.timestamp ).toString();
             // Store the request data for later
-            requestData[ '@@prefix@@-req-' + request.id ] = request;
+            requestData[ 'mp-req-' + request.id ] = request;
             // Add the request to the display
-            $( '#@@prefix@@' ).show().append( $.tmpl( 'requestTemplate', {
+            $( '#mp' ).show().append( $.tmpl( 'requestTemplate', {
               type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : ( request.profile.duration / 1000000 ).toFixed( 2 )
             } ) );
           }
@@ -103,16 +103,16 @@ var MiniProfiler = ( function() {
     e.preventDefault();
     e.stopPropagation();
     var data = requestData[ this.id ];
-    var resultDiv = $( '#@@prefix@@-req' );
+    var resultDiv = $( '#mp-req' );
     resultDiv.undelegate();
     resultDiv.html( $.tmpl( 'resultTemplate', data ) ).slideDown();
-    resultDiv.delegate( '#@@prefix@@-req-close', 'click', function( e ) {
+    resultDiv.delegate( '#mp-req-close', 'click', function( e ) {
       e.preventDefault();
       e.stopPropagation();
       resultDiv.slideUp();
     } );
-    resultDiv.delegate( '#@@prefix@@-req-profile a', 'click', toggleLinkDetails );
-    resultDiv.delegate( '#@@prefix@@-req-as a', 'click', toggleLinkDetails );
+    resultDiv.delegate( '#mp-req-profile a', 'click', toggleLinkDetails );
+    resultDiv.delegate( '#mp-req-as a', 'click', toggleLinkDetails );
   }
 
   return {
