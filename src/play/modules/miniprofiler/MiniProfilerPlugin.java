@@ -57,7 +57,8 @@ public class MiniProfilerPlugin extends PlayPlugin {
 
     @Override
     public void onRoutesLoaded() {
-        Router.addRoute("GET", "/_profiler", "MiniProfilerActions.index");
+        Router.addRoute("GET", "/@profiler", "MiniProfilerActions.index");
+        Router.addRoute("GET", "/@profiler/public", "staticDir:public");
     }
 
     @Override
