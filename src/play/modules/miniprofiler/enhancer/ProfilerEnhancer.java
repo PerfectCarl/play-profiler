@@ -22,7 +22,6 @@ import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
 import play.modules.miniprofiler.CacheProfilerService;
 import play.mvc.Http.Request;
-import play.vfs.VirtualFile;
 
 public class ProfilerEnhancer extends Enhancer {
 
@@ -196,7 +195,12 @@ public class ProfilerEnhancer extends Enhancer {
         }
 
         String entityName = ctClass.getName();
+        // Don't enhance ProfilerController
+        if (entityName.equals("controllers.MiniProfilerActions"))
+            return;
 
+        if (entityName.equals("controllers.PlayDocumentation"))
+            return;
         CtField field = new CtField(classPool.getCtClass("java.util.concurrent.atomic.AtomicLong"), "counter", ctClass);
         field.setModifiers(Modifier.STATIC + Modifier.PRIVATE);
         ctClass.addField(field, "new java.util.concurrent.atomic.AtomicLong(1L);");
@@ -253,6 +257,7 @@ public class ProfilerEnhancer extends Enhancer {
                 // System.out.println(ctMethod.getGenericSignature());
                 CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
                         null);
+                mnew.setModifiers(Modifier.PUBLIC + Modifier.STATIC);
                 StringBuilder body = new StringBuilder();
                 body.append(before);
                 body.append(oldName + "($$);\n");
