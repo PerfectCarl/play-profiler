@@ -22,6 +22,7 @@ import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
 import play.modules.miniprofiler.CacheProfilerService;
 import play.mvc.Http.Request;
+import play.vfs.VirtualFile;
 
 public class ProfilerEnhancer extends Enhancer {
 
@@ -161,7 +162,11 @@ public class ProfilerEnhancer extends Enhancer {
 
     private static String load(String filepath) {
 
-        File realFile = Play.getFile(filepath);
+        String module = "play";
+        VirtualFile f = Play.modules.get(module).child(filepath);
+
+        // File realFile = Play.getFile(filepath);
+        File realFile = f.getRealFile();
         String result = "";
         try {
             result = FileUtils.readFileToString(realFile, "UTF-8");
