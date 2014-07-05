@@ -19,9 +19,12 @@ import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
+import play.modules.profiler.ProfilerUtil;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
+import play.mvc.Scope.Flash;
+import play.mvc.Scope.RenderArgs;
 import play.vfs.VirtualFile;
 
 public class ProfilerEnhancer extends Enhancer {
@@ -108,9 +111,10 @@ public class ProfilerEnhancer extends Enhancer {
             addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
             // addHeader(request, INCLUDES_ATTRIBUTE, result);
             // play.mvc.Scope.Session.current().put(INCLUDES_ATTRIBUTE, result);
-            play.mvc.Scope.Flash.current().put("profiler_scripts", result);
-            play.mvc.Scope.Flash.current().put("profiler_styles", includeCss);
+            Flash.current().put("profiler_scripts", result);
+            Flash.current().put("profiler_styles", includeCss);
 
+            RenderArgs.current().put("profiler", new ProfilerUtil(result, includeCss));
         }
     }
 
