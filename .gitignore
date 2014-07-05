@@ -1,0 +1,14 @@
+/.settings
+/.gitignore
+/.classpath
+/eclipse
+/sample/eclipse
+/sample/lib
+/sample/.classpath
+/sample/.project
+/sample/.settings
+/.project
+/*.pyc
+/sample/tmp
+/sample/modules
+/sample/precompiled

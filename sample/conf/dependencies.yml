@@ -2,13 +2,13 @@
 
 require:
     - play
-#    - local-modules -> mini-profiler 
-    - carl -> mini-profiler 0.2.1
+    - local-modules -> profiler 
+#    - carl -> profiler 0.2.1
 
 repositories:        
     - playCustomModules:
         type: local
-        artifact: "C:/Users/cran/Dropbox/docs/projects/github/play/play-mini-profiler"
+        artifact: "C:/Users/cran/Dropbox/docs/projects/github/play/play-profiler"
         contains:
             - local-modules -> *    
 

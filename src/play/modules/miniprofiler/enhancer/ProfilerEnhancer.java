@@ -85,8 +85,8 @@ public class ProfilerEnhancer extends Enhancer {
         String includeCss = "";
         String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
         if (requestId != null) {
-            String includeJs = load("app/mini_profiler_scripts.html");
-            includeCss = load("app/mini_profiler_styles.html");
+            String includeJs = load("public/includes/mini_profiler_scripts.html");
+            includeCss = load("public/includes/mini_profiler_styles.html");
 
             if (includeJs != null) {
 
@@ -116,12 +116,16 @@ public class ProfilerEnhancer extends Enhancer {
 
     private static String load(String filepath) {
 
-        String module = "play";
         for (String m : Play.modules.keySet())
         {
-            Logger.info("module :" + m + Play.modules.get(m).getRealFile().getAbsolutePath());
+            Logger.info("module :" + m + " " + Play.modules.get(m).getRealFile().getAbsolutePath());
         }
-        VirtualFile vf = Play.modules.get(module).child(filepath);
+        VirtualFile mod = Play.modules.get("play");
+        if (mod == null)
+        {
+            mod = Play.modules.get("profiler");
+        }
+        VirtualFile vf = mod.child(filepath);
         // VirtualFile vf =
         // VirtualFile.fromRelativePath("modules/mini-profiler/" + filepath);
         // File realFile = Play.getFile(filepath);
