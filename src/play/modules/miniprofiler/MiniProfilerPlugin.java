@@ -73,7 +73,7 @@ public class MiniProfilerPlugin extends PlayPlugin {
         if (shouldProfile)
         {
             Profile profile = MiniProfiler.stop();
-            ProfilerEnhancer.af(profile, shouldProfile, requestId, startTime);
+            ProfilerEnhancer.after(profile, shouldProfile, requestId, startTime);
             Logger.info("afterInvocation" + " requestId:" + ProfilerEnhancer.currentRequestId());
         }
     }
