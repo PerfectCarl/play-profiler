@@ -2,7 +2,8 @@
 
 require:
     - play
-    - customModules -> mini-profiler
+#    - customModules -> mini-profiler 0.2
+    - carl -> mini-profiler 0.2
 
 repositories:        
     - playCustomModules:
@@ -10,3 +11,9 @@ repositories:
         artifact: "C:/Users/cran/Dropbox/docs/projects/github/play/play-mini-profiler"
         contains:
             - customModules -> *    
+
+    - githubModules:
+        type: http
+        artifact: "https://github.com/PerfectCarl/play-[module]/raw/master/dist/[module]-[revision].zip"
+        contains:
+            - carl -> *

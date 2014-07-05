@@ -34,7 +34,7 @@ public class ProfilerEnhancer extends Enhancer {
         // Logger.info("af: shouldProfile    " + shouldProfile);
         // Logger.info("af: requestId        " + requestId);
         // Logger.info("af: startTime        " + startTime);
-        Logger.info("af: profile          " + profile);
+        // Logger.info("af: profile          " + profile);
 
         if (shouldProfile)
         {

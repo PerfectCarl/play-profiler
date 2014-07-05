@@ -31,7 +31,8 @@ public class MiniProfilerPlugin extends PlayPlugin {
     @Override
     public void beforeInvocation() {
         super.beforeInvocation();
-        Logger.info("beforeInvocation" + " requestId:" + ProfilerEnhancer.currentRequestId());
+        // Logger.info("beforeInvocation" + " requestId:" +
+        // ProfilerEnhancer.currentRequestId());
     }
 
 
@@ -43,12 +44,14 @@ public class MiniProfilerPlugin extends PlayPlugin {
         {
             ProfilerEnhancer.addIncludes();
         }
-        Logger.info("beforeInvocation: " + actionMethod.getName() + " requestId:" + ProfilerEnhancer.currentRequestId());
+        // Logger.info("beforeInvocation: " + actionMethod.getName() +
+        // " requestId:" + ProfilerEnhancer.currentRequestId());
     }
 
     @Override
     public void onRequestRouting(Route route) {
-        Logger.info("onRequestRouting:" + route.path + " requestId:" + ProfilerEnhancer.currentRequestId());
+        // Logger.info("onRequestRouting:" + route.path + " requestId:" +
+        // ProfilerEnhancer.currentRequestId());
         super.onRequestRouting(route);
     }
 
@@ -59,7 +62,8 @@ public class MiniProfilerPlugin extends PlayPlugin {
         {
             requestId = String.valueOf(counter.incrementAndGet());
             ProfilerEnhancer.before(requestId);
-            Logger.info("routeRequest:" + request.path + " requestId:" + ProfilerEnhancer.currentRequestId());
+            // Logger.info("routeRequest:" + request.path + " requestId:" +
+            // ProfilerEnhancer.currentRequestId());
             startTime = System.currentTimeMillis();
             MiniProfiler.start();
         }
@@ -74,14 +78,16 @@ public class MiniProfilerPlugin extends PlayPlugin {
         {
             Profile profile = MiniProfiler.stop();
             ProfilerEnhancer.after(profile, shouldProfile, requestId, startTime);
-            Logger.info("afterInvocation" + " requestId:" + ProfilerEnhancer.currentRequestId());
+            // Logger.info("afterInvocation" + " requestId:" +
+            // ProfilerEnhancer.currentRequestId());
         }
     }
 
     @Override
     public void afterActionInvocation() {
         super.afterActionInvocation();
-        Logger.info("afterActionInvocation " + " requestId:" + ProfilerEnhancer.currentRequestId());
+        // Logger.info("afterActionInvocation " + " requestId:" +
+        // ProfilerEnhancer.currentRequestId());
 
     }
 
