@@ -1,4 +1,5 @@
-package play.modules.miniprofiler;
+package play.modules.profiler;
+
 
 
 

@@ -1,17 +1,16 @@
-package play.modules.miniprofiler;
+package play.modules.profiler;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicLong;
 
-import play.Logger;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
-import play.modules.miniprofiler.enhancer.ProfilerEnhancer;
+import play.modules.profiler.enhancer.ProfilerEnhancer;
 import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.mvc.Router.Route;
 
-public class MiniProfilerPlugin extends PlayPlugin {
+public class ProfilerPlugin extends PlayPlugin {
 
     ProfilerEnhancer enhancer = new ProfilerEnhancer();
     private long startTime;
@@ -93,7 +92,7 @@ public class MiniProfilerPlugin extends PlayPlugin {
 
     @Override
     public void onRoutesLoaded() {
-        Router.addRoute("GET", "/@profiler/results", "MiniProfilerActions.results");
+        Router.addRoute("GET", "/@profiler/results", "ProfilerActions.results");
         Router.addRoute("GET", "/@profiler/public", "staticDir:public/");
     }
 

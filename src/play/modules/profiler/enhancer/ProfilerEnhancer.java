@@ -1,4 +1,4 @@
-package play.modules.miniprofiler.enhancer;
+package play.modules.profiler.enhancer;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import play.Play;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
-import play.modules.miniprofiler.CacheProfilerService;
-import play.modules.miniprofiler.Profile;
+import play.modules.profiler.CacheProfilerService;
+import play.modules.profiler.Profile;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
@@ -28,7 +28,7 @@ public class ProfilerEnhancer extends Enhancer {
 
     private static final String PLUGIN_NAME = "mini-profiler";
 
-    private static play.modules.miniprofiler.CacheProfilerService cacheProfilerService = new CacheProfilerService();
+    private static CacheProfilerService cacheProfilerService = new CacheProfilerService();
 
     public static void after(Profile profile, boolean shouldProfile, String requestId, long startTime) {
         // Logger.info("af: shouldProfile    " + shouldProfile);
@@ -85,8 +85,8 @@ public class ProfilerEnhancer extends Enhancer {
         String includeCss = "";
         String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
         if (requestId != null) {
-            String includeJs = load("public/includes/mini_profiler_scripts.html");
-            includeCss = load("public/includes/mini_profiler_styles.html");
+            String includeJs = load("public/includes/profiler_scripts.html");
+            includeCss = load("public/includes/profiler_styles.html");
 
             if (includeJs != null) {
 
@@ -108,18 +108,19 @@ public class ProfilerEnhancer extends Enhancer {
             addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
             // addHeader(request, INCLUDES_ATTRIBUTE, result);
             // play.mvc.Scope.Session.current().put(INCLUDES_ATTRIBUTE, result);
-            play.mvc.Scope.Flash.current().put("mini_profile_scripts", result);
-            play.mvc.Scope.Flash.current().put("mini_profile_styles", includeCss);
+            play.mvc.Scope.Flash.current().put("profiler_scripts", result);
+            play.mvc.Scope.Flash.current().put("profiler_styles", includeCss);
 
         }
     }
 
     private static String load(String filepath) {
 
-        for (String m : Play.modules.keySet())
-        {
-            Logger.info("module :" + m + " " + Play.modules.get(m).getRealFile().getAbsolutePath());
-        }
+        // for (String m : Play.modules.keySet())
+        // {
+        // Logger.info("module :" + m + " " +
+        // Play.modules.get(m).getRealFile().getAbsolutePath());
+        // }
         // The module is named play in development mode (local) but profiler
         // one packaged.
         VirtualFile mod = Play.modules.get("profiler");
@@ -180,7 +181,7 @@ public class ProfilerEnhancer extends Enhancer {
 
         String entityName = ctClass.getName();
         // Don't enhance ProfilerController
-        if (entityName.equals("controllers.MiniProfilerActions"))
+        if (entityName.equals("controllers.ProfilerActions"))
             return;
 
         if (entityName.equals("controllers.PlayDocumentation"))
@@ -195,17 +196,17 @@ public class ProfilerEnhancer extends Enhancer {
                 String controllerName = ctClass.getSimpleName() + "." + name;
                 String before = " {       \r\n"
                         +
-                        "        play.modules.miniprofiler.Step step = null;\r\n"
+                        "        play.modules.profiler.Step step = null;\r\n"
                         +
                         "        String stepName = \""
                         + controllerName
                         + "\";\r\n"
                         +
-                        "        boolean shouldProfile = play.modules.miniprofiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
+                        "        boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
                         +
                         "        if (shouldProfile) {\r\n"
                         +
-                        "            step = play.modules.miniprofiler.MiniProfiler.step(stepName);\r\n"
+                        "            step = play.modules.profiler.MiniProfiler.step(stepName);\r\n"
                         +
                         "        }\r\n" +
                         "        try {\r\n" +

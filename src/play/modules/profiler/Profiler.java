@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package play.modules.miniprofiler;
+package play.modules.profiler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package play.modules.miniprofiler;
+package play.modules.profiler;
 
 import java.io.Serializable;
 import java.util.Stack;

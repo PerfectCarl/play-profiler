@@ -12,11 +12,11 @@ import models.CallStat;
 
 import org.apache.commons.lang.StringUtils;
 
-import play.modules.miniprofiler.CacheProfilerService;
-import play.modules.miniprofiler.Profile;
+import play.modules.profiler.CacheProfilerService;
+import play.modules.profiler.Profile;
 import play.mvc.Controller;
 
-public class MiniProfilerActions extends Controller {
+public class ProfilerActions extends Controller {
 
     /** The cache Service */
     static private CacheProfilerService cacheProfilerService = new CacheProfilerService();
