@@ -1,4 +1,4 @@
-self: play -> profiler 0.4
+self: play -> profiler 0.4.1
 
 require:
     - play

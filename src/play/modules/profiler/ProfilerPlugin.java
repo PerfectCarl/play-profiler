@@ -34,7 +34,6 @@ public class ProfilerPlugin extends PlayPlugin {
         // ProfilerEnhancer.currentRequestId());
     }
 
-
     @Override
     public void beforeActionInvocation(Method actionMethod) {
         super.beforeActionInvocation(actionMethod);

@@ -1,0 +1,5 @@
+v0.4.1
+* Fix self displayed as Nan
+
+v0.4
+* initial release

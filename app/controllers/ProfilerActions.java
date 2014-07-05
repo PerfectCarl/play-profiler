@@ -40,6 +40,7 @@ public class ProfilerActions extends Controller {
                     request.put("timestamp", requestData.get("timestamp"));
 
                     Profile rootProfile = (Profile) requestData.get("profile");
+                    rootProfile.computeSelf();
                     request.put("profile", rootProfile);
 
                     Map<String, Object> appstatsMap = getAppstatsDataFor(rootProfile);

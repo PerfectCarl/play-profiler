@@ -1,6 +1,6 @@
 h1. profiler
 
-The @profiler@ module is a simple but effective mini-profiler inspired from "mini-profiler":http://miniprofiler.com/.
+The @profiler@ module is a simple but effective mini-profiler for @Play 1.x@ inspired from "mini-profiler":http://miniprofiler.com/.
 
 !https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler.PNG!
 
@@ -26,7 +26,7 @@ Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 0.4
+    - carl -> profiler 0.4.1
 repositories:        
     - githubModules:
         type: http
