@@ -6,3 +6,26 @@ Based on "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-cor
 
 h1. How to use
 
+bc. require:
+    - play
+    - carl -> profiler 3
+repositories:        
+    - githubModules:
+        type: http
+        artifact: "https://github.com/PerfectCarl/play-[module]/raw/master/dist/[module]-[revision].zip"
+        contains:
+            - carl -> *
+
+bc. <html>
+    <head>
+		...
+        #{get 'moreStyles' /}
+		${profiler.styles.raw()}     
+	</head>
+	<body>
+		...
+		${profiler.scripts.raw()}    
+    </body>
+</html>
+
+!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler-js.PNG!
