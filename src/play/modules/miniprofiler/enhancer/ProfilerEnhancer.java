@@ -117,10 +117,16 @@ public class ProfilerEnhancer extends Enhancer {
     private static String load(String filepath) {
 
         String module = "play";
-        VirtualFile f = Play.modules.get(module).child(filepath);
-
+        for (String m : Play.modules.keySet())
+        {
+            Logger.info("module :" + m + Play.modules.get(m).getRealFile().getAbsolutePath());
+        }
+        VirtualFile vf = Play.modules.get(module).child(filepath);
+        // VirtualFile vf =
+        // VirtualFile.fromRelativePath("modules/mini-profiler/" + filepath);
         // File realFile = Play.getFile(filepath);
-        File realFile = f.getRealFile();
+
+        File realFile = vf.getRealFile();
         String result = "";
         try {
             result = FileUtils.readFileToString(realFile, "UTF-8");
