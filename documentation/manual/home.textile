@@ -1,31 +1,52 @@
-h1. {module name}
+h1. profiler
 
-p(note). Write your module documentation in this file, possibly linking to other Textile files, and delete these notes when you are finished.
+The @profiler@ module is a simple but effective mini-profiler for @Play 1.x@ inspired from "mini-profiler":http://miniprofiler.com/.
 
-p(note). Start with a clear statement of what the module is and what it is for. Link to any third-party libraries that the module is based on.
+!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler.PNG!
 
-p(note). Briefly describe why you might want to use this module in a Play application.
+The code is heavily based on alvin's "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core
 
-h2. Sample application
+h2. Features
 
-p(note). Your module should contain a sample app in the @sample@ directory that demonstrates the module. Describe how to run the demo here.
+h3. Server side calls
+
+The module logs the duration for the following:
+* total request (routing included): time spent from @PlayPlugin.routeRequest@ to the @PlayPlugin.afterInvocation@
+* action: time spent in the controller action
+
+h3. Ajax calls
+
+The module logs the subsequent Ajax calls: 
+
+!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler-js.PNG!
 
 h2. Getting started
 
-p(note). Describe any installation that is required, beyond adding and resolving the module dependency.
+Add the module to your application:
 
-h2. Configuration
+bc. require:
+    - play
+    - carl -> profiler 0.4
+repositories:        
+    - githubModules:
+        type: http
+        artifact: "https://github.com/PerfectCarl/play-[module]/raw/master/dist/[module]-[revision].zip"
+        contains:
+            - carl -> *
 
-p(note). List any configuration options that the module uses, with an @h3.@ heading for each one.
+Then include the profiler's css and javascript resources in your root template file(likely @main.html@) :
 
-h2. Usage
+bc. <html>
+    <head>
+		...
+		${profiler.styles.raw()}     
+	</head>
+	<body>
+		...
+		${profiler.scripts.raw()}    
+    </body>
+</html>
 
-p(note). Explain how to use the module, and describe any routes, controllers, models or views that the module provides.
+h2. Sample application
 
-h2. Tags
-
-p(note). List any tags the module provides, with an @h3.@ heading for each one. Include the tags’ arguments.
-
-h2. Commands
-
-p(note). List any commands the module provides, with an @h3.@ heading for each one. Include the commands’ options.
+A complete sample is available demonstrating the use of the module. 

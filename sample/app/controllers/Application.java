@@ -17,6 +17,10 @@ public class Application extends Controller {
         render();
     }
 
+    public static void welcome() {
+        render();
+    }
+
     public static void messages() {
         ArrayList<Message> results = new ArrayList<Message>();
 

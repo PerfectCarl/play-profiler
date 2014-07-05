@@ -1,14 +1,32 @@
-h1. play-mini-profiler
+h1. profiler
 
-Based on "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core
+The @profiler@ module is a simple but effective mini-profiler inspired from "mini-profiler":http://miniprofiler.com/.
 
-"discussion here":https://groups.google.com/forum/#!topic/play-framework/OvSGAFiVEZM
+!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler.PNG!
 
-h1. How to use
+The code is heavily based on alvin's "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core
+
+h2. Features
+
+h3. Server side calls
+
+The module logs the duration for the following:
+* total request (routing included): time spent from @PlayPlugin.routeRequest@ to the @PlayPlugin.afterInvocation@
+* action: time spent in the controller action
+
+h3. Ajax calls
+
+The module logs the subsequent Ajax calls: 
+
+!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler-js.PNG!
+
+h2. Getting started
+
+Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 3
+    - carl -> profiler 0.4
 repositories:        
     - githubModules:
         type: http
@@ -16,10 +34,11 @@ repositories:
         contains:
             - carl -> *
 
+Then include the profiler's css and javascript resources in your root template file(likely @main.html@) :
+
 bc. <html>
     <head>
 		...
-        #{get 'moreStyles' /}
 		${profiler.styles.raw()}     
 	</head>
 	<body>
@@ -28,4 +47,6 @@ bc. <html>
     </body>
 </html>
 
-!https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler-js.PNG!
+h2. Sample application
+
+A complete sample is available demonstrating the use of the module. 

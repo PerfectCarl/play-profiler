@@ -93,7 +93,7 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void onRoutesLoaded() {
         Router.addRoute("GET", "/@profiler/results", "ProfilerActions.results");
-        Router.addRoute("GET", "/@profiler/public", "staticDir:public/");
+        Router.addRoute("GET", "/@profiler/public/", "staticDir:public/");
     }
 
 }
