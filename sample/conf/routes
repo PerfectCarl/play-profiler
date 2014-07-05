@@ -5,6 +5,7 @@
 # Home page
 GET     /                                       Application.index
 GET     /page                                   Application.page
+GET     /messages                               Application.messages
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

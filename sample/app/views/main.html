@@ -5,6 +5,8 @@
         <title>#{get 'title' /}</title>
         <meta charset="${_response_encoding}">
         <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+		<link rel="stylesheet" href="/@profiler/public/playmanual/manual.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="/@profiler/public/playmanual/wiki.css" type="text/css" media="screen" charset="utf-8">
         #{get 'moreStyles' /}
 		${profiler.styles.raw()}     
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
@@ -12,8 +14,13 @@
 
     </head>
     <body>
-        #{doLayout /}
-        
+		<div class="wrapper">
+			<div id="pageContent">
+				<div class="wikistyle">
+					#{doLayout /}
+				</div>
+			</div>
+		</div>
         <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         #{get 'moreScripts' /}
 		${profiler.scripts.raw()}    

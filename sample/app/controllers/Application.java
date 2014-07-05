@@ -17,7 +17,14 @@ public class Application extends Controller {
         render();
     }
 
-    public static void index(String text) {
-        render();
+    public static void messages() {
+        ArrayList<Message> results = new ArrayList<Message>();
+
+        results.add(new Message(" hello : " + System.currentTimeMillis()));
+        results.add(new Message(" hello : " + System.currentTimeMillis()));
+        results.add(new Message(" hello : " + System.currentTimeMillis()));
+        results.add(new Message(" hello : " + System.currentTimeMillis()));
+
+        renderJSON(results);
     }
 }

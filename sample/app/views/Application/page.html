@@ -1,4 +1,25 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-FRANCK ???
+#{set 'moreScripts'}
+    <script type="text/javascript">
+	$( document ).ready(function() {
+
+		$('#btnMessage').click(function(){
+			$.get( "/messages", function( data ) {
+				for ( var i = 0; i < data.length; i++ ) {
+					var m = data[i];
+					$("#messages").append($('<li/>').text(m.message)) ;
+				}
+			});
+		});
+
+	});
+	</script>
+#{/set}
+
+	<h1>List of messages </h1>
+
+	<input id="btnMessage" type="submit" value="Get messages" />
+
+	<ul id="messages" ></ul>
