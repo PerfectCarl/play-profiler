@@ -114,13 +114,6 @@ public class ProfilerEnhancer extends Enhancer {
         }
     }
 
-    /**
-     * The prefix for all HTML element ids/classes used in the profiler UI. This
-     * must be the same value as the {@code htmlIdPrefix} field in
-     * {@link MiniProfilerFilter}.
-     */
-    private static String htmlIdPrefix = "mp";
-
     private static String load(String filepath) {
 
         String module = "play";
@@ -135,7 +128,7 @@ public class ProfilerEnhancer extends Enhancer {
             e.printStackTrace();
         }
 
-        result = result.replace("@@prefix@@", htmlIdPrefix);
+        // result = result.replace("@@prefix@@", htmlIdPrefix);
         // result = result.replace("@@baseURL@@", servletURL);
 
         return result;

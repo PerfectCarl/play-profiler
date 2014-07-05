@@ -12,15 +12,15 @@
 </script>
 <!-- miniprofiler js end -->
 
-<script type="text/html" id="@@prefix@@-request-tmpl">
-	<div class="${type}" title="${type}"><a href="#" id="@@prefix@@-req-${requestId}">${totalTime} ms</div>
+<script type="text/html" id="mp-request-tmpl">
+	<div class="${type}" title="${type}"><a href="#" id="mp-req-${requestId}">${totalTime} ms</div>
 </script>
 
-<script type="text/html" id="@@prefix@@-result-tree-tmpl">
+<script type="text/html" id="mp-result-tree-tmpl">
 	<li>
 	{{if children.length}}
 		<div class="name" style="padding-left: ${depth * 18 + 5}px">
-		<a href="#" class="expand" id="@@prefix@@-req-profile-${id}">${name}</a> 
+		<a href="#" class="expand" id="mp-req-profile-${id}">${name}</a> 
 	{{else}}
 		<div class="name" style="padding-left: ${depth * 18 + 23}px">
 		${name}
@@ -29,7 +29,7 @@
 	</div><div class="time">${(self / 1000000).toFixed(2)} 
 	</div><div class="time">${(offset / 1000000).toFixed(2)}</div>
 	{{if children.length}}
-		<ul id="@@prefix@@-req-profile-${id}-d" style="display: none;">
+		<ul id="mp-req-profile-${id}-d" style="display: none;">
 		{{each children}}
 			{{tmpl($value) "resultTreeTemplate"}}
 		{{/each}}
@@ -38,16 +38,16 @@
 	</li>
 </script>
 
-<script type="text/html" id="@@prefix@@-result-tmpl">
-	<div id="@@prefix@@-req-header">
-		<div id="@@prefix@@-req-url">${requestURL}</div>
-		<div id="@@prefix@@-req-close"><a href="#">[X]</a></div> 
-		<div id="@@prefix@@-req-time">${timestampFormatted}</div> 
+<script type="text/html" id="mp-result-tmpl">
+	<div id="mp-req-header">
+		<div id="mp-req-url">${requestURL}</div>
+		<div id="mp-req-close"><a href="#">[X]</a></div> 
+		<div id="mp-req-time">${timestampFormatted}</div> 
 	</div>
-	<div id="@@prefix@@-req-profile">
+	<div id="mp-req-profile">
 		<h2>Profile</h2>
-		<div id="@@prefix@@-req-profile-table">
-			<div id="@@prefix@@-req-profile-header">
+		<div id="mp-req-profile-table">
+			<div id="mp-req-profile-header">
 				<div class="name">Step</div>
 				<div class="time">Duration (ms)</div>
 				<div class="time">Self (ms)</div>
@@ -57,7 +57,7 @@
 		</div>
 	</div>
 	{{if appstats && (appstats.rpcStats || appstats.rpcCalls)}}
-		<div id="@@prefix@@-req-as">
+		<div id="mp-req-as">
 			{{if appstats.rpcStats}}
 				<h3>Call Stats</h3>
 				<table>
@@ -94,9 +94,9 @@
 							<tr>
 							<td width="66%">
 								<div>
-									<a href="#" class="expand" id="@@prefix@@-req-as-rpc-${i}">${call.serviceCallName}</a>
+									<a href="#" class="expand" id="mp-req-as-rpc-${i}">${call.serviceCallName}</a>
 								</div>
-								<div id="@@prefix@@-req-as-rpc-${i}-d" class="stack" style="display: none;">
+								<div id="mp-req-as-rpc-${i}-d" class="stack" style="display: none;">
 									<strong>Call Stack</strong><br><br>
 									{{each(i, frame) call.callStack}}{{= frame}}
 										<br>
