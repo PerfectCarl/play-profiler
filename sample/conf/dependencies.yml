@@ -3,7 +3,7 @@
 require:
     - play
     - local-modules -> profiler 
-#    - carl -> profiler 0.4.1
+#    - carl -> profiler 0.4.2
 
 repositories:        
     - playCustomModules:

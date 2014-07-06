@@ -9,6 +9,7 @@ import play.modules.profiler.enhancer.ProfilerEnhancer;
 import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.mvc.Router.Route;
+import play.mvc.Scope.RenderArgs;
 
 public class ProfilerPlugin extends PlayPlugin {
 
@@ -16,6 +17,7 @@ public class ProfilerPlugin extends PlayPlugin {
     private long startTime;
     private String requestId;
     private static AtomicLong counter = new AtomicLong(1L);
+    private static ProfilerUtil profilerUtil = new ProfilerUtil();
 
     @Override
     public void enhance(ApplicationClass applicationClass) throws Exception {
@@ -25,6 +27,8 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void onApplicationStart() {
         super.onApplicationStart();
+        RenderArgs.current().put("profiler", profilerUtil);
+
     }
 
     @Override

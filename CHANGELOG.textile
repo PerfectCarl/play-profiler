@@ -1,3 +1,7 @@
+
+v0.4.2
+* Optimization
+
 v0.4.1
 * Fix self displayed as Nan
 

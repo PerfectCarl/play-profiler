@@ -81,6 +81,10 @@ public class ProfilerEnhancer extends Enhancer {
      */
     static private boolean loadJS = true;
 
+    private static String includeJs;
+
+    private static String includeCss;
+
     public static void addIncludes()
     {
         Request request = Request.current();
@@ -88,8 +92,8 @@ public class ProfilerEnhancer extends Enhancer {
         String includeCss = "";
         String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
         if (requestId != null) {
-            String includeJs = load("public/includes/profiler_scripts.html");
-            includeCss = load("public/includes/profiler_styles.html");
+            String includeJs = loadJs();
+            includeCss = loadCss();
 
             if (includeJs != null) {
 
@@ -116,6 +120,18 @@ public class ProfilerEnhancer extends Enhancer {
 
             RenderArgs.current().put("profiler", new ProfilerUtil(result, includeCss));
         }
+    }
+
+    public static String loadJs() {
+        if (StringUtils.isEmpty(includeJs))
+            includeJs = load("public/includes/profiler_scripts.html");
+        return includeJs;
+    }
+
+    public static String loadCss() {
+        if (StringUtils.isEmpty(includeCss))
+            includeCss = load("public/includes/profiler_styles.html");
+        return includeCss;
     }
 
     private static String load(String filepath) {
