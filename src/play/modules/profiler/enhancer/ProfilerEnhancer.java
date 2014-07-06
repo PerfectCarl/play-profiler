@@ -14,12 +14,15 @@ import org.apache.commons.lang.StringUtils;
 
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
 import play.modules.profiler.CacheProfilerService;
+import play.modules.profiler.MiniProfiler;
 import play.modules.profiler.Profile;
 import play.modules.profiler.ProfilerUtil;
+import play.modules.profiler.Step;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
@@ -71,7 +74,7 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static final String RESPONSE_ID_HEADER = "X-Mini-Profile-Request-Id";
-    private static final String REQUEST_ID_ATTRIBUTE = "mini_profile_request_id";
+    public static final String REQUEST_ID_ATTRIBUTE = "mini_profile_request_id";
     private static final String JS_START = "<!-- miniprofiler js start -->";
     private static final String JS_END = "<!-- miniprofiler js end -->";
     private static final String LOAD_JS = "loadJS";
@@ -81,24 +84,21 @@ public class ProfilerEnhancer extends Enhancer {
      */
     static private boolean loadJS = true;
 
-    private static String includeJs;
-
-    private static String includeCss;
-
-    public static void addIncludes()
+    public static ProfilerUtil addIncludes()
     {
-        Request request = Request.current();
+        // Step step = MiniProfiler.step("include");
+        // Request request = Request.current();
         String result = "";
         String includeCss = "";
-        String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
-        if (requestId != null) {
+        // String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
+        // if (requestId != null) {
             String includeJs = loadJs();
             includeCss = loadCss();
 
             if (includeJs != null) {
 
-                result = includeJs.replace("@@requestId@@", requestId);
-
+                // result = includeJs.replace("@@requestId@@", requestId);
+                result = includeJs;
                 // check if we need to strip out js
                 if (!loadJS) {
                     int startIndex = result.indexOf(JS_START);
@@ -110,32 +110,44 @@ public class ProfilerEnhancer extends Enhancer {
                     result = contentsStart + contentsEnd;
                 }
             }
-        }
+        // }
         if (StringUtils.isNotEmpty(result)) {
-            addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
+            // addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
             // addHeader(request, INCLUDES_ATTRIBUTE, result);
             // play.mvc.Scope.Session.current().put(INCLUDES_ATTRIBUTE, result);
-            Flash.current().put("profiler_scripts", result);
-            Flash.current().put("profiler_styles", includeCss);
+            // Flash.current().put("profiler_scripts", result);
+            // Flash.current().put("profiler_styles", includeCss);
+            // String set = "<script type=\"text/javascript\">\r\n" +
+            // "        var currentRequestId = \"" + requestId + "\" ;\r\n" +
+            // "</script>";
 
-            RenderArgs.current().put("profiler", new ProfilerUtil(result, includeCss));
+            return new ProfilerUtil(result, includeCss);
         }
+        else
+            return ProfilerUtil.empty;
+        // step.close();
     }
 
     public static String loadJs() {
-        if (StringUtils.isEmpty(includeJs))
+        String includeJs = (String) Cache.get("includeJs");
+        if (StringUtils.isEmpty(includeJs)) {
             includeJs = load("public/includes/profiler_scripts.html");
+            Cache.set("includeJs", includeJs);
+        }
         return includeJs;
     }
 
     public static String loadCss() {
-        if (StringUtils.isEmpty(includeCss))
+        String includeCss = (String) Cache.get("includeCss");
+        if (StringUtils.isEmpty(includeCss)) {
             includeCss = load("public/includes/profiler_styles.html");
+            Cache.set("includeCss", includeCss);
+        }
         return includeCss;
     }
 
     private static String load(String filepath) {
-
+        // Logger.info("Loading " + filepath);
         // for (String m : Play.modules.keySet())
         // {
         // Logger.info("module :" + m + " " +
@@ -167,7 +179,7 @@ public class ProfilerEnhancer extends Enhancer {
         return result;
     }
 
-    private static void addHeader(Request request, String name, String requestId) {
+    public static void addHeader(Request request, String name, String requestId) {
         play.mvc.Http.Header h = new play.mvc.Http.Header();
         h.name = name;
         h.values = new java.util.ArrayList<String>(1);
@@ -212,7 +224,8 @@ public class ProfilerEnhancer extends Enhancer {
             // Only enhance action
             if (isAction(ctMethod)) {
                 String name = ctMethod.getName();
-                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." + name);
+                // Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
+                // name);
                 String controllerName = ctClass.getSimpleName() + "." + name;
                 String before = " {       \r\n"
                         +

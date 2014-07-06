@@ -16,8 +16,10 @@ public class ProfilerPlugin extends PlayPlugin {
     ProfilerEnhancer enhancer = new ProfilerEnhancer();
     private long startTime;
     private String requestId;
+    private ProfilerUtil profilerUtil = ProfilerUtil.empty;
     private static AtomicLong counter = new AtomicLong(1L);
-    private static ProfilerUtil profilerUtil = new ProfilerUtil();
+
+    // private static ProfilerUtil profilerUtil = new ProfilerUtil();
 
     @Override
     public void enhance(ApplicationClass applicationClass) throws Exception {
@@ -27,7 +29,6 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void onApplicationStart() {
         super.onApplicationStart();
-        RenderArgs.current().put("profiler", profilerUtil);
 
     }
 
@@ -41,10 +42,14 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void beforeActionInvocation(Method actionMethod) {
         super.beforeActionInvocation(actionMethod);
+        // RenderArgs.current().put("profiler", profilerUtil);
         boolean shouldProfile = ProfilerEnhancer.shouldProfile(Request.current());
         if (shouldProfile)
         {
-            ProfilerEnhancer.addIncludes();
+            ProfilerEnhancer.addHeader(Request.current(), ProfilerEnhancer.REQUEST_ID_ATTRIBUTE, requestId);
+            profilerUtil.setRequestId(requestId);
+
+            RenderArgs.current().put("profiler", profilerUtil);
         }
         // Logger.info("beforeInvocation: " + actionMethod.getName() +
         // " requestId:" + ProfilerEnhancer.currentRequestId());
@@ -62,6 +67,7 @@ public class ProfilerPlugin extends PlayPlugin {
         boolean shouldProfile = ProfilerEnhancer.shouldProfile(Request.current());
         if (shouldProfile)
         {
+            profilerUtil = ProfilerEnhancer.addIncludes();
             requestId = String.valueOf(counter.incrementAndGet());
             ProfilerEnhancer.before(requestId);
             // Logger.info("routeRequest:" + request.path + " requestId:" +
