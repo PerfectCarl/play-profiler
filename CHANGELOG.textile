@@ -1,4 +1,6 @@
+v0.5
 * Develop the first level
+* Add Jamon stats
 
 v0.4.2
 * Optimization

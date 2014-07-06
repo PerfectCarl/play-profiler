@@ -53,13 +53,42 @@
 		<div id="mp-req-profile-table">
 			<div id="mp-req-profile-header">
 				<div class="name">Step</div>
-				<div class="time">Duration</div>
-				<div class="time">Self</div>
-				<div class="time">Offset</div>
+				<div class="time">Duration (ms)</div>
+				<div class="time">Self (ms)</div>
+				<div class="time">Offset (ms)</div>
 			</div>
 			<ul>{{tmpl(profile) "resultTreeTemplate"}}</ul>
 		</div>
 	</div>
+
+	{{if jamonstats && (jamonstats.rpcStats || jamonstats.rpcCalls)}}
+		<div id="mp-req-as-jamon">
+			{{if jamonstats.rpcStats}}
+				<h3>Jamon Stats</h3>
+				<table>
+					<thead>
+					<tr>
+						<th width="66%">Calls</th>
+						<th width="17%"># of Calls</th>
+						<th width="17%">Total Time (ms)</th>
+					</tr>
+					</thead>
+					<tbody>
+						{{each(i, rpc) jamonstats.rpcStats}}
+							<tr>
+								<td width="66%">${i}</td>
+								<td width="17%">${rpc.totalCalls}</td>
+								<td width="17%">${rpc.totalTime}</td>
+							</tr>
+						{{/each}}
+					</tbody>
+				</table> 
+			{{/if}}
+		</div>
+	{{/if}}
+	</div>
+
+
 	{{if appstats && (appstats.rpcStats || appstats.rpcCalls)}}
 		<div id="mp-req-as">
 			{{if appstats.rpcStats}}
@@ -83,6 +112,7 @@
 					</tbody>
 				</table> 
 			{{/if}}
+
 			{{if appstats.rpcCalls}}
 				<h3>RPC Calls</h3>
 				<table>

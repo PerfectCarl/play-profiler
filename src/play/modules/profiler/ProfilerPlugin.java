@@ -3,6 +3,11 @@ package play.modules.profiler;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.jamonapi.JAMonFilter;
+import com.jamonapi.MonitorFactory;
+
+import play.Logger;
+import play.Play;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.modules.profiler.enhancer.ProfilerEnhancer;
@@ -10,6 +15,10 @@ import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.mvc.Router.Route;
 import play.mvc.Scope.RenderArgs;
+import play.templates.Template;
+import play.templates.TemplateLoader;
+import play.templates.TemplateWrapper;
+import play.vfs.VirtualFile;
 
 public class ProfilerPlugin extends PlayPlugin {
 
@@ -17,6 +26,10 @@ public class ProfilerPlugin extends PlayPlugin {
     private long startTime;
     private String requestId;
     private ProfilerUtil profilerUtil = ProfilerUtil.empty;
+    private boolean wantGroovyTemplate = false;
+    private boolean gettingGroovyTemplate = false;
+    private Template template;
+    private TemplateWrapper wrapper;
     private static AtomicLong counter = new AtomicLong(1L);
 
     // private static ProfilerUtil profilerUtil = new ProfilerUtil();
@@ -25,7 +38,47 @@ public class ProfilerPlugin extends PlayPlugin {
     public void enhance(ApplicationClass applicationClass) throws Exception {
         enhancer.enhanceThisClass(applicationClass);
     }
-
+/*
+    @Override
+    public Template loadTemplate(VirtualFile file) {
+        if (wrapper != null)
+            return wrapper ;
+        if (template != null) {
+            wrapper = new TemplateWrapper(template);
+            return wrapper;
+        }
+        if (!wantGroovyTemplate)
+        {
+            for (PlayPlugin plugin : Play.pluginCollection.getEnabledPlugins()) {
+                Logger.info("plugin: " + plugin.getClass().getSimpleName());
+                if (!(plugin instanceof ProfilerPlugin))
+                {
+                    Template pluginProvided = plugin.loadTemplate(file);
+                    if (pluginProvided != null) {
+                        Logger.info("found: " + plugin.getClass().getSimpleName());
+                        template = pluginProvided;
+                    }
+                }
+            }
+            if (template == null)
+                wantGroovyTemplate = true;
+        }
+        if (wantGroovyTemplate && !gettingGroovyTemplate)
+        {
+            gettingGroovyTemplate = true;
+            // Get the default template (groovy)
+            template = TemplateLoader.load(file);
+        }
+        Logger.info("template: " + template);
+        if (template == null)
+            return null;
+        else
+        {
+            wrapper = new TemplateWrapper(template);
+            return wrapper;
+        }
+    }
+*/
     @Override
     public void onApplicationStart() {
         super.onApplicationStart();
@@ -86,8 +139,7 @@ public class ProfilerPlugin extends PlayPlugin {
         {
             Profile profile = MiniProfiler.stop();
             ProfilerEnhancer.after(profile, shouldProfile, requestId, startTime);
-            // Logger.info("afterInvocation" + " requestId:" +
-            // ProfilerEnhancer.currentRequestId());
+
         }
     }
 

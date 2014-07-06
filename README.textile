@@ -20,13 +20,17 @@ The module logs the subsequent Ajax calls:
 
 !https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler-js.PNG!
 
+h3. Play internal monitoring
+
+The module displays Play internal monitor statistics (querying "Jamon":http://jamonapi.sourceforge.net/ data).
+
 h2. Getting started
 
 Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 0.4.2
+    - carl -> profiler 0.5
 repositories:        
     - githubModules:
         type: http

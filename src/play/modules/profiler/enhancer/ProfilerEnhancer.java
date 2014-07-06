@@ -18,6 +18,7 @@ import play.cache.Cache;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
+import play.exceptions.TemplateNotFoundException;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.MiniProfiler;
 import play.modules.profiler.Profile;
@@ -92,24 +93,24 @@ public class ProfilerEnhancer extends Enhancer {
         String includeCss = "";
         // String requestId = request.headers.get(REQUEST_ID_ATTRIBUTE).value();
         // if (requestId != null) {
-            String includeJs = loadJs();
-            includeCss = loadCss();
+        String includeJs = loadJs();
+        includeCss = loadCss();
 
-            if (includeJs != null) {
+        if (includeJs != null) {
 
-                // result = includeJs.replace("@@requestId@@", requestId);
-                result = includeJs;
-                // check if we need to strip out js
-                if (!loadJS) {
-                    int startIndex = result.indexOf(JS_START);
-                    int endIndex = result.indexOf(JS_END);
+            // result = includeJs.replace("@@requestId@@", requestId);
+            result = includeJs;
+            // check if we need to strip out js
+            if (!loadJS) {
+                int startIndex = result.indexOf(JS_START);
+                int endIndex = result.indexOf(JS_END);
 
-                    String contentsStart = result.substring(0, startIndex);
-                    String contentsEnd = result.substring(endIndex + JS_END.length(), result.length());
+                String contentsStart = result.substring(0, startIndex);
+                String contentsEnd = result.substring(endIndex + JS_END.length(), result.length());
 
-                    result = contentsStart + contentsEnd;
-                }
+                result = contentsStart + contentsEnd;
             }
+        }
         // }
         if (StringUtils.isNotEmpty(result)) {
             // addHeader(request, REQUEST_ID_ATTRIBUTE, requestId);
@@ -205,7 +206,7 @@ public class ProfilerEnhancer extends Enhancer {
     public void enhanceThisClass(final ApplicationClass applicationClass) throws Exception {
 
         final CtClass ctClass = makeClass(applicationClass);
-
+        // Logger.info(PLUGIN_NAME + ": list " + ctClass.getName());
         // enhances only Controller classes
         if (!ctClass.subtypeOf(classPool.get(ControllerSupport.class.getName()))) {
             return;
@@ -220,14 +221,15 @@ public class ProfilerEnhancer extends Enhancer {
             return;
 
         for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
-
+            // Logger.info("method: " + ctMethod.getLongName());
             // Only enhance action
             if (isAction(ctMethod)) {
                 String name = ctMethod.getName();
-                // Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
-                // name);
+                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
+                        name);
+                System.out.println();
                 String controllerName = ctClass.getSimpleName() + "." + name;
-                String before = " {       \r\n"
+                String before = " {      System.out.println(\"00\"); \r\n"
                         +
                         "        play.modules.profiler.Step step = null;\r\n"
                         +
@@ -235,7 +237,7 @@ public class ProfilerEnhancer extends Enhancer {
                         + controllerName
                         + "\";\r\n"
                         +
-                        "        boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
+                        "        System.out.println(\"01\"); boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
                         +
                         "        if (shouldProfile) {\r\n"
                         +
@@ -247,9 +249,9 @@ public class ProfilerEnhancer extends Enhancer {
 
                 String after = "  } finally {\r\n"
                         +
-                        "            if (shouldProfile){\r\n"
+                        "            if (shouldProfile && step != null){\r\n"
                         +
-                        "                step.close();\r\n"
+                        "                System.out.println(\"02\"); step.close();\r\n"
                         +
                         "              }\r\n"
                         +
@@ -257,7 +259,7 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "}";
 
-                String oldName = name + "$prof";
+                String oldName = name + "__prof";
                 ctMethod.setName(oldName);
                 CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
                         null);
@@ -271,6 +273,47 @@ public class ProfilerEnhancer extends Enhancer {
                 ctClass.addMethod(mnew);
             }
         }
+        for (final CtMethod ctMethod : ctClass.getMethods()) {
+            if (ctMethod.getName().startsWith("render"))
+            // if
+            // ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
+            {
+                String name = ctMethod.getName();
+                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
+                        name);
+
+                String before = " {      System.out.println(\"10\"); \r\n"
+                        +
+                        "        try {\r\n" +
+                        "";
+                String after = "  } catch (play.exceptions.TemplateNotFoundException ex) {" +
+
+                        "                System.out.println(\"13\"); throw ex ; \r\n"
+                        + "}" +
+                        "finally {\r\n"
+                        +
+                        "                System.out.println(\"12\"); \r\n"
+                        +
+                        "         }\r\n"
+                        +
+                        "}";
+
+                String oldName = name + "__prof";
+                ctMethod.setName(oldName);
+                CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
+                        null);
+                // mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC);
+                StringBuilder body = new StringBuilder();
+                body.append(before);
+                body.append(oldName + "($$);\n");
+                body.append(after);
+
+                mnew.setBody(body.toString());
+                // ctClass.addMethod(mnew);
+
+            }
+        }
+
         // Done.
         applicationClass.enhancedByteCode = ctClass.toBytecode();
 

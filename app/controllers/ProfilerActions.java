@@ -12,6 +12,9 @@ import models.CallStat;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jamonapi.MonitorFactory;
+
+import play.Logger;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
 import play.mvc.Controller;
@@ -43,8 +46,12 @@ public class ProfilerActions extends Controller {
                     rootProfile.computeSelf();
                     request.put("profile", rootProfile);
 
-                    Map<String, Object> appstatsMap = getAppstatsDataFor(rootProfile);
+                    Map<String, Object> appstatsMap =
+                            getAppstatsDataFor(rootProfile);
                     request.put("appstats", appstatsMap != null ? appstatsMap : null);
+
+                    Map<String, Object> jamonMap = getJamonStats(rootProfile);
+                    request.put("jamonstats", jamonMap != null ? jamonMap : null);
 
                     requests.add(request);
                 }
@@ -63,6 +70,46 @@ public class ProfilerActions extends Controller {
         // ObjectMapper jsonMapper = new ObjectMapper();
         // jsonMapper.writeValue(resp.getOutputStream(), result);
 
+    }
+
+    private static Map<String, Object> getJamonStats(Profile rootProfile) {
+        Map<String, Object> appstatsMap = new HashMap<String, Object>();
+        Map<String, Map<String, Object>> rpcInfoMap = new LinkedHashMap<String, Map<String, Object>>();
+
+        // Logger.info("afterInvocation" + " requestId:" +
+        // ProfilerEnhancer.currentRequestId());
+        //String[] header = MonitorFactory.getHeader();
+        Object[][] data = MonitorFactory.getData();
+        /*String head = "";
+        for (String row : header) {
+            head += row.toString() + "|";
+        }*/
+        // Logger.info(head);
+        // Label|Hits|Avg|Total|StdDev|LastValue|Min|Max|Active|AvgActive|MaxActive|FirstAccess|LastAccess|Enabled|Primary|HasListeners|
+        for (Object[] row : data)
+        {
+            String name = row[0].toString();
+            Double duration = (Double) row[2];
+            name = StringUtils.removeEnd(name, ", ms.");
+            Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
+            rpcInfoMap.put(name, rpcInfo);
+
+            rpcInfo.put("totalCalls", row[1]);
+
+            DecimalFormat df = new DecimalFormat("#.##");
+            rpcInfo.put("totalTime", df.format(duration));
+
+            // Logger.info("duration: " + duration.getClass());
+            // String r = "";
+            // for (Object cell : row)
+            // {
+            // r += cell.toString() + "|";
+            // }
+            // Logger.info(r);
+        }
+        appstatsMap.put("rpcStats", !rpcInfoMap.isEmpty() ? rpcInfoMap : null);
+
+        return appstatsMap;
     }
 
     private static Map<String, Object> getAppstatsDataFor(Profile rootProfile) {
