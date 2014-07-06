@@ -30,7 +30,7 @@ Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 0.5
+    - carl -> profiler 0.5.1
 repositories:        
     - githubModules:
         type: http

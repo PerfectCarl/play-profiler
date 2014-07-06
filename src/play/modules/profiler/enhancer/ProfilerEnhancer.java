@@ -225,8 +225,8 @@ public class ProfilerEnhancer extends Enhancer {
             // Only enhance action
             if (isAction(ctMethod)) {
                 String name = ctMethod.getName();
-                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
-                        name);
+                // Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
+                // name);
                 System.out.println();
                 String controllerName = ctClass.getSimpleName() + "." + name;
                 String before = " {     /* System.out.println(\"00\"); */\r\n"

@@ -1,8 +1,10 @@
+v0.5.1
+* Fix Html unbalanced tags and css glitches
+* Updated sample : custom profiling+db
+
 v0.5
 * Develop the first level
 * Add Jamon stats
-* Fix Html unbalanced tags and css glitches
-* Updated sample : custom profiling+db
 
 v0.4.2
 * Optimization
