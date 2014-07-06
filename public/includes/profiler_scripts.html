@@ -13,21 +13,26 @@
 <!-- miniprofiler js end -->
 
 <script type="text/html" id="mp-request-tmpl">
-	<div class="${type}" title="${type}"><a href="#" id="mp-req-${requestId}">${totalTime} ms</div>
+	<div class="${type}" title="${type}">
+		<a href="#" id="mp-req-${requestId}">${totalTime} ms</a>
+	</div>
 </script>
 
 <script type="text/html" id="mp-result-tree-tmpl">
 	<li>
+	
 	{{if children.length}}
 		<div class="name" style="padding-left: ${depth * 18 + 5}px">
-		<a href="#" class="expand" id="mp-req-profile-${id}">${name}</a> 
+			<a href="#" class="expand" id="mp-req-profile-${id}">${name}</a> 
 	{{else}}
 		<div class="name" style="padding-left: ${depth * 18 + 23}px">
-		${name}
+			${name}
 	{{/if}}
-	</div><div class="time">${(duration / 1000000).toFixed(2)}
-	</div><div class="time">${(self / 1000000).toFixed(2)} 
-	</div><div class="time">${(offset / 1000000).toFixed(2)}</div>
+		</div>
+	
+	<div class="time">${(duration / 1000000).toFixed(2)}</div>
+	<div class="time">${(self / 1000000).toFixed(2)} </div>
+	<div class="time">${(offset / 1000000).toFixed(2)}</div>
 	{{if children.length}}
 		{{if depth == 0 }}
 			<ul id="mp-req-profile-${id}-d">
@@ -45,7 +50,9 @@
 <script type="text/html" id="mp-result-tmpl">
 	<div id="mp-req-header">
 		<div id="mp-req-url">${requestURL}</div>
-		<div id="mp-req-close"><a href="#">[X]</a></div> 
+		<div id="mp-req-close">
+			<a href="#">[X]</a>
+		</div> 
 		<div id="mp-req-time">${timestampFormatted}</div> 
 	</div>
 	<div id="mp-req-profile">
@@ -70,7 +77,7 @@
 					<tr>
 						<th width="66%">Calls</th>
 						<th width="17%"># of Calls</th>
-						<th width="17%">Total Time (ms)</th>
+						<th width="17%">Avg time (ms)</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -86,8 +93,6 @@
 			{{/if}}
 		</div>
 	{{/if}}
-	</div>
-
 
 	{{if appstats && (appstats.rpcStats || appstats.rpcCalls)}}
 		<div id="mp-req-as">
@@ -126,27 +131,28 @@
 					<tbody>
 						{{each(i, call) appstats.rpcCalls}}
 							<tr>
-							<td width="66%">
-								<div>
-									<a href="#" class="expand" id="mp-req-as-rpc-${i}">${call.serviceCallName}</a>
-								</div>
-								<div id="mp-req-as-rpc-${i}-d" class="stack" style="display: none;">
-									<strong>Call Stack</strong><br><br>
-									{{each(i, frame) call.callStack}}{{= frame}}
-										<br>
-									{{/each}}
-									{{if call.request}}
-										<br><strong>Request</strong><br><br>
-										${call.request}
-									{{/if}}
-									{{if call.response}}
-										<strong>Response</strong><br><br>
-										${call.response}
-									{{/if}}
-								</div>        
-							</td>
-							<td width="17%">${call.totalTime}</td>
-							<td width="17%">${call.startOffset}</td>
+								<td width="66%">
+									<div>
+										<a href="#" class="expand"
+										   id="mp-req-as-rpc-${i}">${call.serviceCallName}</a>
+									</div>
+									<div id="mp-req-as-rpc-${i}-d" class="stack" style="display: none;">
+										<strong>Call Stack</strong><br><br>
+										{{each(i, frame) call.callStack}}{{= frame}}
+											<br>
+										{{/each}}
+										{{if call.request}}
+											<br><strong>Request</strong><br><br>
+											${call.request}
+										{{/if}}
+										{{if call.response}}
+											<strong>Response</strong><br><br>
+											${call.response}
+										{{/if}}
+									</div>        
+								</td>
+								<td width="17%">${call.totalTime}</td>
+								<td width="17%">${call.startOffset}</td>
 							</tr>
 						{{/each}}
 					</tbody>
@@ -154,5 +160,4 @@
 			{{/if}} 
 		</div>
 	{{/if}}
-	</div>
 </script>

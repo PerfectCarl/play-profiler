@@ -229,7 +229,7 @@ public class ProfilerEnhancer extends Enhancer {
                         name);
                 System.out.println();
                 String controllerName = ctClass.getSimpleName() + "." + name;
-                String before = " {      System.out.println(\"00\"); \r\n"
+                String before = " {     /* System.out.println(\"00\"); */\r\n"
                         +
                         "        play.modules.profiler.Step step = null;\r\n"
                         +
@@ -237,7 +237,7 @@ public class ProfilerEnhancer extends Enhancer {
                         + controllerName
                         + "\";\r\n"
                         +
-                        "        System.out.println(\"01\"); boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
+                        "        /*System.out.println(\"01\");*/ boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
                         +
                         "        if (shouldProfile) {\r\n"
                         +
@@ -251,7 +251,7 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "            if (shouldProfile && step != null){\r\n"
                         +
-                        "                System.out.println(\"02\"); step.close();\r\n"
+                        "                /*System.out.println(\"02\");*/ step.close();\r\n"
                         +
                         "              }\r\n"
                         +
@@ -273,7 +273,7 @@ public class ProfilerEnhancer extends Enhancer {
                 ctClass.addMethod(mnew);
             }
         }
-        for (final CtMethod ctMethod : ctClass.getMethods()) {
+        /*for (final CtMethod ctMethod : ctClass.getMethods()) {
             if (ctMethod.getName().startsWith("render"))
             // if
             // ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
@@ -312,7 +312,7 @@ public class ProfilerEnhancer extends Enhancer {
                 // ctClass.addMethod(mnew);
 
             }
-        }
+        }*/
 
         // Done.
         applicationClass.enhancedByteCode = ctClass.toBytecode();

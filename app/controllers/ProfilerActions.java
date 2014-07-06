@@ -2,6 +2,9 @@ package controllers;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -78,27 +81,40 @@ public class ProfilerActions extends Controller {
 
         // Logger.info("afterInvocation" + " requestId:" +
         // ProfilerEnhancer.currentRequestId());
-        //String[] header = MonitorFactory.getHeader();
+        // String[] header = MonitorFactory.getHeader();
         Object[][] data = MonitorFactory.getData();
-        /*String head = "";
-        for (String row : header) {
-            head += row.toString() + "|";
-        }*/
+        /*
+         * String head = ""; for (String row : header) { head += row.toString()
+         * + "|"; }
+         */
         // Logger.info(head);
         // Label|Hits|Avg|Total|StdDev|LastValue|Min|Max|Active|AvgActive|MaxActive|FirstAccess|LastAccess|Enabled|Primary|HasListeners|
+        Arrays.sort(data, new Comparator<Object[]>() {
+
+            @Override
+            public int compare(Object[] o1, Object[] o2) {
+                Date d1 = (Date) o1[12];
+                Date d2 = (Date) o2[12];
+                return d1.compareTo(d2);
+            }
+        });
         for (Object[] row : data)
         {
             String name = row[0].toString();
             Double duration = (Double) row[2];
             name = StringUtils.removeEnd(name, ", ms.");
-            Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
-            rpcInfoMap.put(name, rpcInfo);
 
-            rpcInfo.put("totalCalls", row[1]);
+            // If ProfilerActions takes less than 2ms, we hide it
+            if (("ProfilerActions.results()".equals(name) && duration < 2) || !"ProfilerActions.results()".equals(name))
+            {
+                Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
+                rpcInfoMap.put(name, rpcInfo);
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            rpcInfo.put("totalTime", df.format(duration));
+                rpcInfo.put("totalCalls", row[1]);
 
+                DecimalFormat df = new DecimalFormat("#.##");
+                rpcInfo.put("totalTime", df.format(duration));
+            }
             // Logger.info("duration: " + duration.getClass());
             // String r = "";
             // for (Object cell : row)
