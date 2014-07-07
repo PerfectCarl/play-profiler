@@ -2,6 +2,7 @@ package play.modules.profiler.enhancer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -273,10 +274,21 @@ public class ProfilerEnhancer extends Enhancer {
                 ctClass.addMethod(mnew);
             }
         }
-        /*for (final CtMethod ctMethod : ctClass.getMethods()) {
-            if (ctMethod.getName().startsWith("render"))
-            // if
-            // ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
+        /*CtMethod m = CtNewMethod.make(
+                        "protected static void renderTemplate2(java.lang.String templateName, java.util.Map<java.lang.String,java.lang.Object> args) \r\n"
+                                +
+                                "{     System.out.println(\"10\"); \r\n" +
+                                "      play.mvc.Controller.renderTemplate( templateName, args) ; \r\n" +
+                                "}",
+                ctClass);
+        // m.setModifiers(Modifier.PROTECTED + Modifier.STATIC);
+        ctClass.addMethod(m);
+        */
+        //CtMethod m = new 
+        for (final CtMethod ctMethod : ctClass.getMethods()) {
+            //if (ctMethod.getName().startsWith("render"))
+             if
+             ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
             {
                 String name = ctMethod.getName();
                 Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
@@ -298,21 +310,22 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "}";
 
-                String oldName = name + "__prof";
-                ctMethod.setName(oldName);
+                //String oldName = name + "__prof";
+                //ctMethod.setName(oldName);
                 CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
                         null);
-                // mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC);
+                // mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC +
+                // Modifier.);
                 StringBuilder body = new StringBuilder();
-                body.append(before);
-                body.append(oldName + "($$);\n");
-                body.append(after);
-
+                // body.append(before);
+                // body.append("super.($$);\n");
+                // body.append(after);
+                body.append("System.out.println(\"12\");");
                 mnew.setBody(body.toString());
                 // ctClass.addMethod(mnew);
 
             }
-        }*/
+        }
 
         // Done.
         applicationClass.enhancedByteCode = ctClass.toBytecode();

@@ -31,6 +31,10 @@ var MiniProfiler = ( function() {
 
     // Display profile details when one of the request times is clicked on
     $( '#mp' ).delegate( 'a', 'click', displayProfileDetails );
+    
+	// Add tooltips
+  	$('.tooltip').tooltipster();
+
   }
 
   /**

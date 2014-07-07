@@ -122,7 +122,7 @@ public class Profile implements Serializable {
     }
 
     /**
-     * Get how long the step tool (nanoseconds).
+     * Get how long the step took (nanoseconds).
      * 
      * @return The duration.
      */
@@ -141,7 +141,7 @@ public class Profile implements Serializable {
     }
 
     /**
-     * Get the step's offset from the start of profling (nanoseconds).
+     * Get the step's offset from the start of profiling (nanoseconds).
      * 
      * @return The offset.
      */

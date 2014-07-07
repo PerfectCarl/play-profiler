@@ -1,5 +1,7 @@
 package controllers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +77,15 @@ public class ProfilerActions extends Controller {
 
     }
 
+    private static double round(double value, int places) {
+        if (places < 0)
+            throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     private static Map<String, Object> getJamonStats(Profile rootProfile) {
         Map<String, Object> appstatsMap = new HashMap<String, Object>();
         Map<String, Map<String, Object>> rpcInfoMap = new LinkedHashMap<String, Map<String, Object>>();
@@ -103,17 +114,17 @@ public class ProfilerActions extends Controller {
             String name = row[0].toString();
             Double duration = (Double) row[2];
             name = StringUtils.removeEnd(name, ", ms.");
-
+            Double calls = (Double) row[1];
             // If ProfilerActions takes less than 2ms, we hide it
-            if (("ProfilerActions.results()".equals(name) && duration < 2) || !"ProfilerActions.results()".equals(name))
+            if (calls > 0L)
             {
                 Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
                 rpcInfoMap.put(name, rpcInfo);
 
-                rpcInfo.put("totalCalls", row[1]);
+                rpcInfo.put("totalCalls", calls);
 
-                DecimalFormat df = new DecimalFormat("#.##");
-                rpcInfo.put("totalTime", df.format(duration));
+                // DecimalFormat df = new DecimalFormat("#.##");
+                rpcInfo.put("totalTime", round(duration, 2));
             }
             // Logger.info("duration: " + duration.getClass());
             // String r = "";
@@ -147,8 +158,9 @@ public class ProfilerActions extends Controller {
 
             rpcInfo.put("totalCalls", cs.getCalls());
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            rpcInfo.put("totalTime", df.format(cs.getTotalTime() / 1000000.0));
+            // DecimalFormat df = new DecimalFormat("#.##");
+
+            rpcInfo.put("totalTime", round(cs.getTotalTime() / 1000000.0, 2));
         }
 
         appstatsMap.put("rpcStats", !rpcInfoMap.isEmpty() ? rpcInfoMap : null);

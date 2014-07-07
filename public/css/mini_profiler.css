@@ -79,3 +79,8 @@
 
 #mp-req #mp-req-as-jamon { padding: 10px; }
 #mp-req #mp-req-as-jamon .stack { margin: 15px 0 15px 15px; font-family: monospace; font-size: 10px; overflow: auto; width: 380px; }
+
+.dotted{
+  border-bottom: 1px dashed #999999;
+  text-decoration: none; 
+}

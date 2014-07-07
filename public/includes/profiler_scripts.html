@@ -1,5 +1,7 @@
 
 <!-- miniprofiler js start -->
+<script type="text/javascript" src="/@profiler/public/js/jquery.tooltipster.min.js"></script>
+
 <script type="text/javascript" src="/@profiler/public/js/jquery.tmpl.min.js"></script>
 <script type="text/javascript" src="/@profiler/public/js/mini_profiler.js"></script>
 <script type="text/javascript">
@@ -9,6 +11,7 @@
 			baseURL : '/@profiler/'
 		});
 	});
+
 </script>
 <!-- miniprofiler js end -->
 
@@ -60,9 +63,9 @@
 		<div id="mp-req-profile-table">
 			<div id="mp-req-profile-header">
 				<div class="name">Step</div>
-				<div class="time">Duration (ms)</div>
-				<div class="time">Self (ms)</div>
-				<div class="time">Offset (ms)</div>
+				<div class="time dotted" title="How long the step took">Duration (ms)</div>
+				<div class="time dotted" title="The duration of this step, minus the duration of all the child steps. In effect, returns the time spent only in this step.">Self (ms)</div>
+				<div class="time dotted" title="The step's offset from the start of profiling">Offset (ms)</div>
 			</div>
 			<ul>{{tmpl(profile) "resultTreeTemplate"}}</ul>
 		</div>

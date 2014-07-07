@@ -19,6 +19,11 @@ public class Application extends Controller {
         render();
     }
 
+    static protected void renderTemplate(String templateName, Map<String, Object> args) {
+        System.out.println("XX");
+        Controller.renderTemplate(templateName, args);
+    }
+    
     public static void db() {
         Step step = MiniProfiler.step("database", "add data");
         try {

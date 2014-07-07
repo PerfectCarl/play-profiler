@@ -1,3 +1,7 @@
+v0.5.2 
+* Add tooltips
+* Cosmetic changes 
+
 v0.5.1
 * Fix Html unbalanced tags and css glitches
 * Updated sample : custom profiling+db
