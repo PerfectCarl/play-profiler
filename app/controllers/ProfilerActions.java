@@ -2,7 +2,6 @@ package controllers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,12 +16,11 @@ import models.CallStat;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jamonapi.MonitorFactory;
-
-import play.Logger;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
 import play.mvc.Controller;
+
+import com.jamonapi.MonitorFactory;
 
 public class ProfilerActions extends Controller {
 
@@ -48,16 +46,18 @@ public class ProfilerActions extends Controller {
                     request.put("timestamp", requestData.get("timestamp"));
 
                     Profile rootProfile = (Profile) requestData.get("profile");
-                    rootProfile.computeSelf();
-                    request.put("profile", rootProfile);
+                    if (rootProfile != null)
+                    {
+                        rootProfile.computeSelf();
+                        request.put("profile", rootProfile);
 
-                    Map<String, Object> appstatsMap =
-                            getAppstatsDataFor(rootProfile);
-                    request.put("appstats", appstatsMap != null ? appstatsMap : null);
+                        Map<String, Object> appstatsMap =
+                                getAppstatsDataFor(rootProfile);
+                        request.put("appstats", appstatsMap != null ? appstatsMap : null);
 
-                    Map<String, Object> jamonMap = getJamonStats(rootProfile);
-                    request.put("jamonstats", jamonMap != null ? jamonMap : null);
-
+                        Map<String, Object> jamonMap = getJamonStats();
+                        request.put("jamonstats", jamonMap != null ? jamonMap : null);
+                    }
                     requests.add(request);
                 }
             }
@@ -86,7 +86,7 @@ public class ProfilerActions extends Controller {
         return bd.doubleValue();
     }
 
-    private static Map<String, Object> getJamonStats(Profile rootProfile) {
+    private static Map<String, Object> getJamonStats() {
         Map<String, Object> appstatsMap = new HashMap<String, Object>();
         Map<String, Map<String, Object>> rpcInfoMap = new LinkedHashMap<String, Map<String, Object>>();
 

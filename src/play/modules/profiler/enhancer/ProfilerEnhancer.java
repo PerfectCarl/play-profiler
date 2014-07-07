@@ -2,7 +2,8 @@ package play.modules.profiler.enhancer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -19,17 +20,12 @@ import play.cache.Cache;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.classloading.enhancers.ControllersEnhancer.ControllerSupport;
 import play.classloading.enhancers.Enhancer;
-import play.exceptions.TemplateNotFoundException;
 import play.modules.profiler.CacheProfilerService;
-import play.modules.profiler.MiniProfiler;
 import play.modules.profiler.Profile;
 import play.modules.profiler.ProfilerUtil;
-import play.modules.profiler.Step;
 import play.mvc.Http.Header;
 import play.mvc.Http.Request;
 import play.mvc.Http.Response;
-import play.mvc.Scope.Flash;
-import play.mvc.Scope.RenderArgs;
 import play.vfs.VirtualFile;
 
 public class ProfilerEnhancer extends Enhancer {
@@ -47,18 +43,26 @@ public class ProfilerEnhancer extends Enhancer {
         if (shouldProfile)
         {
             Request request = Request.current();
-            java.util.Map<String, Object> requestData = new java.util.HashMap<String, Object>();
-            requestData.put("requestURL",
-                    request.url + ((request.querystring != null) ? "?" + request.querystring : ""));
-            requestData.put("timestamp", startTime);
-            requestData.put("profile", profile);
-            cacheProfilerService.put(requestId, requestData);
+            if (request == null)
+            {
+                Logger.info("request: null");
+            } else
+            {
+                java.util.Map<String, Object> requestData = new java.util.HashMap<String, Object>();
+                requestData.put("requestURL",
+                        request.url + ((request.querystring != null) ? "?" + request.querystring : ""));
+                requestData.put("timestamp", startTime);
+                requestData.put("profile", profile);
+                cacheProfilerService.put(requestId, requestData);
+            }
         }
     }
 
     public static void before(String requestId) {
-        Response.current().setHeader(RESPONSE_ID_HEADER, requestId);
-        addHeader(Request.current(), REQUEST_ID_ATTRIBUTE, requestId);
+        if (Response.current() != null)
+            Response.current().setHeader(RESPONSE_ID_HEADER, requestId);
+        if (Request.current() != null)
+            addHeader(Request.current(), REQUEST_ID_ATTRIBUTE, requestId);
     }
 
     public static boolean shouldProfile(String url) {
@@ -72,6 +76,8 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     public static boolean shouldProfile(Request current) {
+        if (current == null)
+            return true;
         return shouldProfile(current.path);
     }
 
@@ -221,6 +227,7 @@ public class ProfilerEnhancer extends Enhancer {
         if (entityName.equals("controllers.PlayDocumentation"))
             return;
 
+        List<CtMethod> methods = new ArrayList<CtMethod>();
         for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
             // Logger.info("method: " + ctMethod.getLongName());
             // Only enhance action
@@ -228,9 +235,8 @@ public class ProfilerEnhancer extends Enhancer {
                 String name = ctMethod.getName();
                 // Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
                 // name);
-                System.out.println();
                 String controllerName = ctClass.getSimpleName() + "." + name;
-                String before = " {     /* System.out.println(\"00\"); */\r\n"
+                String before = "{      /* System.out.println(\"00\"); */\r\n"
                         +
                         "        play.modules.profiler.Step step = null;\r\n"
                         +
@@ -238,7 +244,7 @@ public class ProfilerEnhancer extends Enhancer {
                         + controllerName
                         + "\";\r\n"
                         +
-                        "        /*System.out.println(\"01\");*/ boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request.url);\r\n"
+                        "        /*System.out.println(\"01\");*/ boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request);\r\n"
                         +
                         "        if (shouldProfile) {\r\n"
                         +
@@ -256,8 +262,7 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "              }\r\n"
                         +
-                        "         }\r\n"
-                        +
+                        "         }\r\n " +
                         "}";
 
                 String oldName = name + "__prof";
@@ -271,24 +276,25 @@ public class ProfilerEnhancer extends Enhancer {
                 body.append(after);
 
                 mnew.setBody(body.toString());
-                ctClass.addMethod(mnew);
+                methods.add(mnew);
+
             }
         }
-        /*CtMethod m = CtNewMethod.make(
-                        "protected static void renderTemplate2(java.lang.String templateName, java.util.Map<java.lang.String,java.lang.Object> args) \r\n"
-                                +
-                                "{     System.out.println(\"10\"); \r\n" +
-                                "      play.mvc.Controller.renderTemplate( templateName, args) ; \r\n" +
-                                "}",
-                ctClass);
-        // m.setModifiers(Modifier.PROTECTED + Modifier.STATIC);
-        ctClass.addMethod(m);
-        */
-        //CtMethod m = new 
+        for (CtMethod method : methods) {
+            ctClass.addMethod(method);
+        }
+        /*
+         * CtMethod m = CtNewMethod.make(
+         * "protected static void renderTemplate2(java.lang.String templateName, java.util.Map<java.lang.String,java.lang.Object> args) \r\n"
+         * + "{     System.out.println(\"10\"); \r\n" +
+         * "      play.mvc.Controller.renderTemplate( templateName, args) ; \r\n"
+         * + "}", ctClass); // m.setModifiers(Modifier.PROTECTED +
+         * Modifier.STATIC); ctClass.addMethod(m);
+         */
+        // CtMethod m = new
         for (final CtMethod ctMethod : ctClass.getMethods()) {
-            //if (ctMethod.getName().startsWith("render"))
-             if
-             ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
+            // if (ctMethod.getName().startsWith("render"))
+            if ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
             {
                 String name = ctMethod.getName();
                 Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
@@ -310,8 +316,8 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "}";
 
-                //String oldName = name + "__prof";
-                //ctMethod.setName(oldName);
+                // String oldName = name + "__prof";
+                // ctMethod.setName(oldName);
                 CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
                         null);
                 // mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC +

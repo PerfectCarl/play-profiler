@@ -15,6 +15,7 @@ import play.mvc.Http.Request;
 import play.mvc.Router;
 import play.mvc.Router.Route;
 import play.mvc.Scope.RenderArgs;
+import play.templates.BaseTemplate;
 import play.templates.Template;
 import play.templates.TemplateLoader;
 import play.templates.TemplateWrapper;
@@ -83,6 +84,20 @@ public class ProfilerPlugin extends PlayPlugin {
     public void onApplicationStart() {
         super.onApplicationStart();
 
+    }
+
+    @Override
+    public void onEvent(String message, Object context) {
+        Logger.info("onEvent: " + message);
+        super.onEvent(message, context);
+
+    }
+
+    @Override
+    public String overrideTemplateSource(BaseTemplate template, String source) {
+        Logger.info("overrideTemplateSource: " + template);
+
+        return super.overrideTemplateSource(template, source);
     }
 
     @Override
