@@ -307,7 +307,7 @@ public class ProfilerEnhancer extends Enhancer {
          * Modifier.STATIC); ctClass.addMethod(m);
          */
         // CtMethod m = new
-        for (final CtMethod ctMethod : ctClass.getMethods()) {
+      /*  for (final CtMethod ctMethod : ctClass.getMethods()) {
             // if (ctMethod.getName().startsWith("render"))
             if ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
             {
@@ -346,7 +346,7 @@ public class ProfilerEnhancer extends Enhancer {
                 // ctClass.addMethod(mnew);
 
             }
-        }
+        }*/
 
         // Done.
         applicationClass.enhancedByteCode = ctClass.toBytecode();
