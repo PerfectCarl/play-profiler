@@ -18,8 +18,10 @@ import org.apache.commons.lang.StringUtils;
 
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
+import play.modules.profiler.ProfilerExtra;
 import play.mvc.Controller;
 
+import com.google.appengine.tools.appstats.GaeProfilerExtra;
 import com.jamonapi.MonitorFactory;
 
 public class ProfilerActions extends Controller {
@@ -57,6 +59,14 @@ public class ProfilerActions extends Controller {
 
                         Map<String, Object> jamonMap = getJamonStats();
                         request.put("jamonstats", jamonMap != null ? jamonMap : null);
+
+                        ProfilerExtra extra = getExtra();
+                        if (extra != null)
+                        {
+                            Map<String, Object> ex = extra.getExtraData(requestId);
+                            request.put("gae", ex);
+                        }
+
                     }
                     requests.add(request);
                 }
@@ -75,6 +85,10 @@ public class ProfilerActions extends Controller {
         // ObjectMapper jsonMapper = new ObjectMapper();
         // jsonMapper.writeValue(resp.getOutputStream(), result);
 
+    }
+
+    private static ProfilerExtra getExtra() {
+        return new GaeProfilerExtra();
     }
 
     private static double round(double value, int places) {

@@ -1,0 +1,41 @@
+#{extends 'main.html' /}
+#{set title:'Web socket' /}
+
+#{set 'moreScripts'}
+    <script type="text/javascript">
+	$( document ).ready(function() {
+
+	function createUrl(s) {
+		var l = window.location;
+		return ((l.protocol === "https:") ? "wss://" : "ws://") + l.hostname + (((l.port != 80) && (l.port != 443)) ? ":" + l.port : "") + s;
+}
+
+        url = createUrl("/echo") ;
+		var socket = new WebSocket(url) ; 
+
+	     socket.onmessage = function (evt) 
+	     { 
+			refresh() ;
+	        var received_msg = evt.data;
+	        $("#messages").append($('<li/>').text(received_msg)) ;
+	     };
+	     
+		$('#btnMessage').click(function(){
+			socket.send("Dirty Harry");
+		});
+		
+		function refresh() 
+		{
+			MiniProfiler.refresh( "ajax" );
+		}
+	});
+	</script>
+#{/set}
+
+	<h1>Web socket messages</h1>
+
+	<ul id="messages" ></ul>
+
+	<input id="btnMessage" type="submit" value="Send message" />
+
+	

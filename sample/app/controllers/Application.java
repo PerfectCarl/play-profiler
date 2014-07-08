@@ -1,13 +1,14 @@
 package controllers;
 
-import play.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import models.Data;
+import models.Message;
 import play.modules.profiler.MiniProfiler;
 import play.modules.profiler.Step;
-import play.mvc.*;
-
-import java.util.*;
-
-import models.*;
+import play.mvc.Controller;
 
 public class Application extends Controller {
 
@@ -23,8 +24,8 @@ public class Application extends Controller {
         System.out.println("XX");
         Controller.renderTemplate(templateName, args);
     }
-    
-    public static void db() {
+
+    public static void custom() {
         Step step = MiniProfiler.step("database", "add data");
         try {
             new Data(System.currentTimeMillis()).save();
@@ -36,17 +37,13 @@ public class Application extends Controller {
             step.close();
         }
         step = MiniProfiler.step("database", "findAll");
+        List<Data> result;
         try {
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            Data.findAll();
+            result = Data.findAll();
         } finally {
             step.close();
         }
-        render();
+        render(result);
     }
 
     public static void welcome() {
@@ -63,4 +60,9 @@ public class Application extends Controller {
 
         renderJSON(results);
     }
+
+    public static void hello() {
+        render();
+    }
+
 }

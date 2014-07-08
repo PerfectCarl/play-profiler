@@ -72,7 +72,35 @@ var MiniProfiler = ( function() {
             requestData[ 'mp-req-' + request.id ] = request;
             // Add the request to the display
             $( '#mp' ).show().append( $.tmpl( 'requestTemplate', {
-              type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : ( request.profile.duration / 1000000 ).toFixed( 2 )
+              type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
+            } ) );
+          }
+        }
+      }
+      if ( callback ) {
+        callback();
+      }
+    }, 'json' );
+  }
+
+  /**
+   * Get profile information for the specified request id via a WebSocket request.
+   */
+  function getProfileInformationWS( type, callback ) {
+    $.get( baseURL + 'results', {
+      ids : "websocket"
+    }, function( data ) {
+      if ( data.ok ) {
+        var requests = data.requests;
+        if ( requests && requests.length ) {
+          for ( var i = 0; i < requests.length; i++ ) {
+            var request = requests[ i ];
+            request.timestampFormatted = new Date( request.timestamp ).toString();
+            // Store the request data for later
+            requestData[ 'mp-req-' + request.id ] = request;
+            // Add the request to the display
+            $( '#mp' ).show().append( $.tmpl( 'requestTemplate', {
+              type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
             } ) );
           }
         }
@@ -120,6 +148,7 @@ var MiniProfiler = ( function() {
   }
 
   return {
-    init : init
+    init : init,
+	refresh : getProfileInformationWS
   };
 }() );

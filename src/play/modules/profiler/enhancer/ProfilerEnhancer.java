@@ -75,10 +75,10 @@ public class ProfilerEnhancer extends Enhancer {
         return true;
     }
 
-    public static boolean shouldProfile(Request current) {
-        if (current == null)
+    public static boolean shouldProfile() {
+        if (Request.current() == null)
             return true;
-        return shouldProfile(current.path);
+        return shouldProfile(Request.current().path);
     }
 
     private static final String RESPONSE_ID_HEADER = "X-Mini-Profile-Request-Id";
@@ -155,12 +155,12 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static String load(String filepath) {
-        // Logger.info("Loading " + filepath);
-        // for (String m : Play.modules.keySet())
-        // {
-        // Logger.info("module :" + m + " " +
-        // Play.modules.get(m).getRealFile().getAbsolutePath());
-        // }
+        Logger.info("Loading " + filepath);
+        for (String m : Play.modules.keySet())
+        {
+            Logger.info("module :" + m + " " +
+                    Play.modules.get(m).getRealFile().getAbsolutePath());
+        }
         // The module is named play in development mode (local) but profiler
         // one packaged.
         VirtualFile mod = Play.modules.get("profiler");
@@ -188,7 +188,9 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     public static void addHeader(Request request, String name, String requestId) {
-        play.mvc.Http.Header h = new play.mvc.Http.Header();
+        if (request == null)
+            return;
+        Header h = new Header();
         h.name = name;
         h.values = new java.util.ArrayList<String>(1);
         h.values.add(requestId);
@@ -198,6 +200,8 @@ public class ProfilerEnhancer extends Enhancer {
 
     static public String currentRequestId()
     {
+        if (Request.current() == null)
+            return "";
         Header header = Request.current().headers.get(REQUEST_ID_ATTRIBUTE);
         if (header == null)
             return "";
@@ -212,20 +216,29 @@ public class ProfilerEnhancer extends Enhancer {
     @Override
     public void enhanceThisClass(final ApplicationClass applicationClass) throws Exception {
 
+        String className = applicationClass.name;
+        if (className.equals("controllers.ProfilerActions"))
+            return;
+
+        if (className.equals("controllers.PlayDocumentation"))
+            return;
+
+        if (className.equals("controllers.GAEActions"))
+            return;
+
         final CtClass ctClass = makeClass(applicationClass);
         // Logger.info(PLUGIN_NAME + ": list " + ctClass.getName());
         // enhances only Controller classes
-        if (!ctClass.subtypeOf(classPool.get(ControllerSupport.class.getName()))) {
+        if (!ctClass.subtypeOf(classPool.get(ControllerSupport.class.getName()))
+        // ||
+        // !ctClass.subtypeOf(classPool.get(WebSocketController.class.getName())))
+        // {
+        ) {
             return;
         }
 
         String entityName = ctClass.getName();
         // Don't enhance ProfilerController
-        if (entityName.equals("controllers.ProfilerActions"))
-            return;
-
-        if (entityName.equals("controllers.PlayDocumentation"))
-            return;
 
         List<CtMethod> methods = new ArrayList<CtMethod>();
         for (final CtMethod ctMethod : ctClass.getDeclaredMethods()) {
@@ -233,10 +246,10 @@ public class ProfilerEnhancer extends Enhancer {
             // Only enhance action
             if (isAction(ctMethod)) {
                 String name = ctMethod.getName();
-                // Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
-                // name);
+                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
+                        name);
                 String controllerName = ctClass.getSimpleName() + "." + name;
-                String before = "{      /* System.out.println(\"00\"); */\r\n"
+                String before = "{      "
                         +
                         "        play.modules.profiler.Step step = null;\r\n"
                         +
@@ -244,7 +257,9 @@ public class ProfilerEnhancer extends Enhancer {
                         + controllerName
                         + "\";\r\n"
                         +
-                        "        /*System.out.println(\"01\");*/ boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile(request);\r\n"
+                        "        /*System.out.println(\"01\");*/ "
+                        +
+                        "       boolean shouldProfile = play.modules.profiler.enhancer.ProfilerEnhancer.shouldProfile();\r\n"
                         +
                         "        if (shouldProfile) {\r\n"
                         +
@@ -258,7 +273,7 @@ public class ProfilerEnhancer extends Enhancer {
                         +
                         "            if (shouldProfile && step != null){\r\n"
                         +
-                        "                /*System.out.println(\"02\");*/ step.close();\r\n"
+                        "                step.close();\r\n"
                         +
                         "              }\r\n"
                         +
