@@ -1,9 +1,9 @@
 
 <!-- miniprofiler js start -->
-<script type="text/javascript" src="/@profiler/public/js/jquery.tooltipster.min.js"></script>
+<script type="text/javascript" src="/@profiler/public/javascripts/jquery.tooltipster.min.js"></script>
 
-<script type="text/javascript" src="/@profiler/public/js/jquery.tmpl.min.js"></script>
-<script type="text/javascript" src="/@profiler/public/js/mini_profiler.js"></script>
+<script type="text/javascript" src="/@profiler/public/javascripts/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="/@profiler/public/javascripts/mini_profiler.js"></script>
 <script type="text/javascript">
 	jQuery(function() {
 		MiniProfiler.init({
@@ -37,11 +37,7 @@
 	<div class="time">${(self / 1000000).toFixed(2)} </div>
 	<div class="time">${(offset / 1000000).toFixed(2)}</div>
 	{{if children.length}}
-		{{if depth == 0 }}
-			<ul id="mp-req-profile-${id}-d">
-		{{else}}
-			<ul id="mp-req-profile-${id}-d" style="display: none;">		
-		{{/if}}
+		<ul id="mp-req-profile-${id}-d" style="display: none;">		
 		{{each children}}
 			{{tmpl($value) "resultTreeTemplate"}}
 		{{/each}}
