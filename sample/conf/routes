@@ -4,12 +4,12 @@
 
 # Home page
 GET     /                                       Application.index
-GET     /page                                   Application.page
+GET     /ajax                                   Application.ajax
 GET     /welcome                                Application.welcome
-GET     /messages                               Application.messages
+GET     /messagesJson                           Application.messagesJson
 GET     /custom                               	Application.custom
 WS      /helloSocket            				WebSocket.hello
-GET     /hello									Application.hello 
+GET     /websocket								Application.websocket 
 WS      /echo            						WebSocket.echo
 
 # Ignore favicon requests

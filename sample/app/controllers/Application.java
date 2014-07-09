@@ -16,7 +16,7 @@ public class Application extends Controller {
         render();
     }
 
-    public static void page() {
+    public static void ajax() {
         render();
     }
 
@@ -50,7 +50,7 @@ public class Application extends Controller {
         render();
     }
 
-    public static void messages() {
+    public static void messagesJson() {
         ArrayList<Message> results = new ArrayList<Message>();
 
         results.add(new Message(" hello : " + System.currentTimeMillis()));
@@ -61,7 +61,7 @@ public class Application extends Controller {
         renderJSON(results);
     }
 
-    public static void hello() {
+    public static void websocket() {
         render();
     }
 
