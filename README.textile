@@ -68,4 +68,4 @@ The zip file is created in the @dist@ folder.
 Then open the zip file created in the @dist/@ folder and delete the following: 
 * the @sample@ folder
 * the @eclipse@ folder
-* @lib/@
+* @lib/appengine*.jar@

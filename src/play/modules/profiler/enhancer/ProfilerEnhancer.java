@@ -64,7 +64,40 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static String getAppstatsId() {
-        String result = "";
+        return "resp: " + getAppstatsIdFromResponse() + " req: " + getAppstatsIdFromRequest();
+    }
+
+    private static String getAppstatsIdFromResponse() {
+        String result = "nada";
+        Response request = Response.current();
+        if (request != null)
+        {
+            Header header = request.headers.get("X-TraceUrl");
+            if (header != null)
+            {
+                String value = header.value();
+                result = value;
+                if (StringUtils.isNotEmpty(value))
+                {
+                    String[] parts = value.split("\\?")[1].split("&");
+                    for (String part : parts)
+                    {
+                        String[] nameValue = part.split("=");
+                        if ("time".equals(nameValue[0]))
+                        {
+                            result = nameValue[1];
+                            Logger.info("profiler: appstats " + result);
+                        }
+                    }
+
+                }
+            }
+        }
+        return result;
+    }
+
+    private static String getAppstatsIdFromRequest() {
+        String result = "nada";
         Request request = Request.current();
         if (request != null)
         {
@@ -72,6 +105,7 @@ public class ProfilerEnhancer extends Enhancer {
             if (header != null)
             {
                 String value = header.value();
+                result = value;
                 if (StringUtils.isNotEmpty(value))
                 {
                     String[] parts = value.split("\\?")[1].split("&");

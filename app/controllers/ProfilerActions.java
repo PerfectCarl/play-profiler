@@ -16,12 +16,12 @@ import models.CallStat;
 
 import org.apache.commons.lang.StringUtils;
 
+import play.Logger;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
 import play.modules.profiler.ProfilerExtra;
 import play.mvc.Controller;
 
-import com.google.appengine.tools.appstats.GaeProfilerExtra;
 import com.jamonapi.MonitorFactory;
 
 public class ProfilerActions extends Controller {
@@ -61,10 +61,15 @@ public class ProfilerActions extends Controller {
                         request.put("jamonstats", jamonMap != null ? jamonMap : null);
 
                         ProfilerExtra extra = getExtra();
-                        if (extra != null)
+                        if (requestData.get("appstatsId") != null)
                         {
-                            Map<String, Object> ex = extra.getExtraData(requestId);
-                            request.put("gae", ex);
+                            if (extra != null)
+                            {
+                                String appstatId = requestData.get("appstatsId").toString();
+                                request.put("appstatsId", appstatId);
+                                Map<String, Object> ex = extra.getExtraData(appstatId);
+                                request.put("gae", ex);
+                            }
                         }
 
                     }
@@ -88,7 +93,38 @@ public class ProfilerActions extends Controller {
     }
 
     private static ProfilerExtra getExtra() {
-        return new GaeProfilerExtra();
+        if (isGaeSdkInClasspath())
+        {
+            Logger.info("isGaeSdkInClasspath");
+            String classname = "com.google.appengine.tools.appstats.GaeProfilerExtra";
+            Class clazz;
+            try {
+                clazz = Class.forName(classname);
+                if (clazz != null)
+                {
+                    Object[] enums = clazz.getEnumConstants();
+                    if (enums != null)
+                        if (enums.length > 0)
+                            return (ProfilerExtra) enums[0];
+                }
+                return null;
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }
+        else
+            return null;
+    }
+
+    public static boolean isGaeSdkInClasspath() {
+        try {
+            String classname = "com.google.appengine.api.LifecycleManager";
+            Class clazz = Class.forName(classname);
+            return clazz != null;
+        } catch (Throwable t) {
+            // Nothing to do
+        }
+        return false;
     }
 
     private static double round(double value, int places) {

@@ -13,9 +13,9 @@ import com.google.appengine.tools.appstats.StatsProtos.AggregateRpcStatsProto;
 import com.google.appengine.tools.appstats.StatsProtos.IndividualRpcStatsProto;
 import com.google.appengine.tools.appstats.StatsProtos.StackFrameProto;
 
-public class GaeProfilerExtra implements ProfilerExtra {
+public enum GaeProfilerExtra implements ProfilerExtra {
+    INSTANCE;
 
-    @Override
     public Map<String, Object> getExtraData(String param) {
         return null; // getAppstatsDataFor(param, 2);
     }
