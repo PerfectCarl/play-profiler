@@ -57,3 +57,15 @@ bc. <html>
 h2. Sample application
 
 A complete sample is available demonstrating the use of the module. 
+
+h2. How to build
+
+bc. play deps
+play build-module
+
+The zip file is created in the @dist@ folder.
+
+Then open the zip file created in the @dist/@ folder and delete the following: 
+* the @sample@ folder
+* the @eclipse@ folder
+* @lib/@

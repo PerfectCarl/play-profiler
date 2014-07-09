@@ -188,12 +188,12 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static String load(String filepath) {
-        Logger.info("Loading " + filepath);
-        for (String m : Play.modules.keySet())
-        {
-            Logger.info("module :" + m + " " +
-                    Play.modules.get(m).getRealFile().getAbsolutePath());
-        }
+        // Logger.info("Loading " + filepath);
+        // for (String m : Play.modules.keySet())
+        // {
+        // Logger.info("module :" + m + " " +
+        // Play.modules.get(m).getRealFile().getAbsolutePath());
+        // }
         // The module is named play in development mode (local) but profiler
         // one packaged.
         VirtualFile mod = Play.modules.get("profiler");

@@ -4,4 +4,4 @@ require:
     - play [1.2.7,)
     - com.google.appengine -> appengine-api-1.0-sdk 1.8.1.1
     - com.google.appengine -> appengine-api-labs 1.8.1.1
-    - com.google.appengine -> appengine-tools-sdk 1.8.1.1
+    - org.javassist -> javassist 3.18.2-GA
