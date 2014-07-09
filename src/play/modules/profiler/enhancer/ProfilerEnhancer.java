@@ -53,9 +53,42 @@ public class ProfilerEnhancer extends Enhancer {
                         request.url + ((request.querystring != null) ? "?" + request.querystring : ""));
                 requestData.put("timestamp", startTime);
                 requestData.put("profile", profile);
+                String appstatsId = getAppstatsId();
+                if (StringUtils.isNotEmpty(appstatsId))
+                {
+                    requestData.put("appstatsId", appstatsId);
+                }
                 cacheProfilerService.put(requestId, requestData);
             }
         }
+    }
+
+    private static String getAppstatsId() {
+        String result = "";
+        Request request = Request.current();
+        if (request != null)
+        {
+            Header header = request.headers.get("X-TraceUrl");
+            if (header != null)
+            {
+                String value = header.value();
+                if (StringUtils.isNotEmpty(value))
+                {
+                    String[] parts = value.split("\\?")[1].split("&");
+                    for (String part : parts)
+                    {
+                        String[] nameValue = part.split("=");
+                        if ("time".equals(nameValue[0]))
+                        {
+                            result = nameValue[1];
+                            Logger.info("profiler: appstats " + result);
+                        }
+                    }
+
+                }
+            }
+        }
+        return result;
     }
 
     public static void before(String requestId) {
@@ -222,6 +255,8 @@ public class ProfilerEnhancer extends Enhancer {
 
         if (className.equals("controllers.PlayDocumentation"))
             return;
+        if (className.equals("controllers.ProjectDocumentation"))
+            return;
 
         if (className.equals("controllers.GAEActions"))
             return;
@@ -307,46 +342,31 @@ public class ProfilerEnhancer extends Enhancer {
          * Modifier.STATIC); ctClass.addMethod(m);
          */
         // CtMethod m = new
-      /*  for (final CtMethod ctMethod : ctClass.getMethods()) {
-            // if (ctMethod.getName().startsWith("render"))
-            if ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)".equals(ctMethod.getLongName()))
-            {
-                String name = ctMethod.getName();
-                Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." +
-                        name);
-
-                String before = " {      System.out.println(\"10\"); \r\n"
-                        +
-                        "        try {\r\n" +
-                        "";
-                String after = "  } catch (play.exceptions.TemplateNotFoundException ex) {" +
-
-                        "                System.out.println(\"13\"); throw ex ; \r\n"
-                        + "}" +
-                        "finally {\r\n"
-                        +
-                        "                System.out.println(\"12\"); \r\n"
-                        +
-                        "         }\r\n"
-                        +
-                        "}";
-
-                // String oldName = name + "__prof";
-                // ctMethod.setName(oldName);
-                CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass,
-                        null);
-                // mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC +
-                // Modifier.);
-                StringBuilder body = new StringBuilder();
-                // body.append(before);
-                // body.append("super.($$);\n");
-                // body.append(after);
-                body.append("System.out.println(\"12\");");
-                mnew.setBody(body.toString());
-                // ctClass.addMethod(mnew);
-
-            }
-        }*/
+        /*
+         * for (final CtMethod ctMethod : ctClass.getMethods()) { // if
+         * (ctMethod.getName().startsWith("render")) if
+         * ("play.mvc.Controller.renderTemplate(java.lang.String,java.util.Map)"
+         * .equals(ctMethod.getLongName())) { String name = ctMethod.getName();
+         * Logger.info(PLUGIN_NAME + ": enhancing " + entityName + "." + name);
+         * 
+         * String before = " {      System.out.println(\"10\"); \r\n" +
+         * "        try {\r\n" + ""; String after =
+         * "  } catch (play.exceptions.TemplateNotFoundException ex) {" +
+         * 
+         * "                System.out.println(\"13\"); throw ex ; \r\n" + "}" +
+         * "finally {\r\n" + "                System.out.println(\"12\"); \r\n"
+         * + "         }\r\n" + "}";
+         * 
+         * // String oldName = name + "__prof"; // ctMethod.setName(oldName);
+         * CtMethod mnew = CtNewMethod.copy(ctMethod, name, ctClass, null); //
+         * mnew.setModifiers(Modifier.PROTECTED + Modifier.STATIC + //
+         * Modifier.); StringBuilder body = new StringBuilder(); //
+         * body.append(before); // body.append("super.($$);\n"); //
+         * body.append(after); body.append("System.out.println(\"12\");");
+         * mnew.setBody(body.toString()); // ctClass.addMethod(mnew);
+         * 
+         * } }
+         */
 
         // Done.
         applicationClass.enhancedByteCode = ctClass.toBytecode();

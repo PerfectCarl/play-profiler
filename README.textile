@@ -2,6 +2,7 @@ h1. profiler
 
 The @profiler@ module is a simple but effective mini-profiler for @Play 1.x@ inspired from "mini-profiler":http://miniprofiler.com/.
 
+A demo is "available":play-profiler.appspot.com (the complete source code is available at "github":https://github.com/PerfectCarl/play-profiler-demo-gae)
 !https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler.PNG!
 
 The code is heavily based on alvin's "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core
@@ -23,6 +24,8 @@ The module logs the subsequent Ajax calls:
 h3. Play internal monitoring
 
 The module displays Play internal monitor statistics (querying "Jamon":http://jamonapi.sourceforge.net/ data).
+
+h3. Supports Google App Engine
 
 h2. Getting started
 

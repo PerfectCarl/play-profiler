@@ -6,6 +6,7 @@ v0.6
 ~ working on template integration
 * added more documentation
 * add tests for websockets
+* tested with play1.3rc1
 
 v0.5.2 
 * Add tooltips
