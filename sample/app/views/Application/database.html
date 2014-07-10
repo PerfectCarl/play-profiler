@@ -1,0 +1,21 @@
+#{extends 'main.html' /}
+#{set title:'Profiling custom code' /}
+
+Profiling custom code is easy. Here's a sample:
+
+<pre>
+import play.modules.profiler.MiniProfiler;
+import play.modules.profiler.Step;
+...
+
+    public static void custom() {
+        step = MiniProfiler.step("database", "DB calls");
+        List<Data> result;
+        try {
+            result = Data.findAll();
+        } finally {
+            step.close();
+        }
+        render(result);
+    }
+</pre>

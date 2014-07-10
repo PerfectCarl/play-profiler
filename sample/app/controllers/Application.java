@@ -37,9 +37,29 @@ public class Application extends Controller {
             new Data(System.currentTimeMillis()).save();
 
             result = Data.findAll();
+
         } finally {
             step.close();
         }
+        render();
+    }
+
+    public static void database() {
+        List<Data> result;
+
+        new Data(System.currentTimeMillis()).save();
+        new Data(System.currentTimeMillis()).save();
+        new Data(System.currentTimeMillis()).save();
+        Data d = new Data(System.currentTimeMillis()).save();
+        new Data(System.currentTimeMillis()).save();
+
+        result = Data.findAll();
+
+        Data.count();
+
+        d.delete();
+
+        Data.deleteAll();
         render();
     }
 

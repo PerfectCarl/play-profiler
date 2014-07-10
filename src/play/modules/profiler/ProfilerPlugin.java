@@ -1,10 +1,13 @@
 package play.modules.profiler;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.StringUtils;
 
+import play.Play;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.modules.profiler.enhancer.ProfilerEnhancer;
@@ -28,6 +31,7 @@ public class ProfilerPlugin extends PlayPlugin {
     private boolean gettingGroovyTemplate = false;
     private Template template;
     private TemplateWrapper wrapper;
+    private Deque<Step> steps = new ArrayDeque<Step>();
 
     private static AtomicLong counter = new AtomicLong(1L);
 
@@ -81,7 +85,81 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void onEvent(String message, Object context) {
         // Logger.info("onEvent: " + message);
-        displayGae("onEvent");
+        // displayGae("onEvent");
+        String name = message;
+        String type = " ";
+        String[] strings = message.split("\\.");
+        if (strings.length > 0)
+            type = strings[0];
+        if ("JPQL".equals(type))
+        {
+            if (strings.length > 1)
+                name = strings[1];
+            String arg = "";
+            if (context != null)
+            {
+                arg = context.toString();
+                arg = StringUtils.removeStart(arg, "models.");
+            }
+            name = "Db.JPQL." + name + "(" + arg + ")";
+            if (message.endsWith(".before"))
+            {
+                Step step = MiniProfiler.step(name);
+                steps.push(step);
+            }
+            if (message.endsWith(".after") && !steps.isEmpty())
+            {
+                Step step = steps.pop();
+
+                step.close();
+            }
+        }
+        if ("template".equals(type))
+        {
+            if (context != null)
+            {
+                name = "render(" + context.toString() + ")";
+            }
+            if (message.endsWith(".before"))
+            {
+                Step step = MiniProfiler.step(name);
+                steps.push(step);
+            }
+            if (message.endsWith(".after") && !steps.isEmpty())
+            {
+                Step step = steps.pop();
+                step.close();
+            }
+        }
+        // Waiting for patch acceptance
+        if (Play.version.contains("x"))
+            if ("JPASupport".equals(type))
+            {
+                if (strings.length > 1)
+                    name = strings[1];
+                // String arg = "";
+
+                // if (context instanceof JPABase)
+                // {
+                // JPABase jpa = (JPABase) context;
+                // if (jpa.em() != null) {
+                // for (Map.Entry<String, Object> entry :
+                // jpa.em().getProperties().entrySet())
+                // Logger.info(entry.getKey() + " = " + entry.getValue());
+                // }
+                // }
+                name = "Db.JPA." + name;
+                if (message.endsWith("ing"))
+                {
+                    Step step = MiniProfiler.step(name);
+                    steps.push(step);
+                }
+                if (message.endsWith("ed") && !steps.isEmpty())
+                {
+                    Step step = steps.pop();
+                    step.close();
+                }
+            }
         super.onEvent(message, context);
 
     }
@@ -103,7 +181,7 @@ public class ProfilerPlugin extends PlayPlugin {
     @Override
     public void beforeActionInvocation(Method actionMethod) {
         super.beforeActionInvocation(actionMethod);
-        displayGae("beforeActionInvocation");
+        // displayGae("beforeActionInvocation");
         // RenderArgs.current().put("profiler", profilerUtil);
         boolean shouldProfile = ProfilerEnhancer.shouldProfile();
         if (shouldProfile)
@@ -135,7 +213,7 @@ public class ProfilerPlugin extends PlayPlugin {
             // Logger.info("routeRequest:" + request.path + " requestId:" +
             // ProfilerEnhancer.currentRequestId());
             startTime = System.currentTimeMillis();
-            displayGae("routeRequest");
+            // displayGae("routeRequest");
             MiniProfiler.start();
         }
         super.routeRequest(request);
@@ -149,7 +227,7 @@ public class ProfilerPlugin extends PlayPlugin {
         {
             Profile profile = MiniProfiler.stop();
             ProfilerEnhancer.after(profile, shouldProfile, requestId, startTime);
-            displayGae("afterInvocation");
+            // displayGae("afterInvocation");
 
         }
     }
@@ -159,7 +237,7 @@ public class ProfilerPlugin extends PlayPlugin {
         super.afterActionInvocation();
         // Logger.info("afterActionInvocation " + " requestId:" +
         // ProfilerEnhancer.currentRequestId());
-        displayGae("afterActionInvocation");
+        // displayGae("afterActionInvocation");
 
     }
 

@@ -8,6 +8,7 @@ GET     /ajax                                   Application.ajax
 GET     /welcome                                Application.welcome
 GET     /messagesJson                           Application.messagesJson
 GET     /custom                               	Application.custom
+GET     /database                               Application.database
 WS      /helloSocket            				WebSocket.hello
 GET     /websocket								Application.websocket 
 WS      /echo            						WebSocket.echo
