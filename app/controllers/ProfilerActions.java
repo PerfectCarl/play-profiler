@@ -16,7 +16,6 @@ import models.CallStat;
 
 import org.apache.commons.lang.StringUtils;
 
-import play.Logger;
 import play.Play;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
@@ -61,15 +60,18 @@ public class ProfilerActions extends Controller {
                         Map<String, Object> jamonMap = getJamonStats();
                         request.put("jamonstats", jamonMap != null ? jamonMap : null);
 
-                        ProfilerExtra extra = getExtra();
                         if (requestData.get("appstatsId") != null)
                         {
-                            if (extra != null)
-                            {
-                                String appstatId = requestData.get("appstatsId").toString();
-                                request.put("appstatsId", appstatId);
-                                Map<String, Object> ex = extra.getExtraData(appstatId);
-                                request.put("gae", ex);
+                            String appstatId = requestData.get("appstatsId").toString();
+                            if (StringUtils.isNotEmpty(appstatId)) {
+                                ProfilerExtra extra = getExtra();
+                                if (extra != null)
+                                {
+
+                                    request.put("appstatsId", appstatId);
+                                    Map<String, Object> ex = extra.getExtraData(appstatId);
+                                    request.put("gae", ex);
+                                }
                             }
                         }
 
@@ -96,7 +98,7 @@ public class ProfilerActions extends Controller {
     private static ProfilerExtra getExtra() {
         if (hasGaeModule())
         {
-            Logger.info("isGaeSdkInClasspath");
+            // Logger.info("isGaeSdkInClasspath");
             String classname = "com.google.appengine.tools.appstats.GaeProfilerExtra";
             Class clazz;
             try {
