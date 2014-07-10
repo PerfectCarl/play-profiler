@@ -9,7 +9,7 @@ import play.modules.profiler.Step;
 ...
 
     public static void custom() {
-        step = MiniProfiler.step("database", "findAll");
+        step = MiniProfiler.step("database", "DB calls");
         List<Data> result;
         try {
             result = Data.findAll();

@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.StringUtils;
 
-import play.Logger;
 import play.PlayPlugin;
 import play.classloading.ApplicationClasses.ApplicationClass;
 import play.modules.profiler.enhancer.ProfilerEnhancer;
@@ -50,7 +49,7 @@ public class ProfilerPlugin extends PlayPlugin {
                 String value = header.value();
                 if (StringUtils.isNotEmpty(value))
                 {
-                    Logger.info("profiler: " + name + " " + value);
+                    // Logger.info("profiler: " + name + " " + value);
                 }
             }
 
@@ -81,7 +80,7 @@ public class ProfilerPlugin extends PlayPlugin {
 
     @Override
     public void onEvent(String message, Object context) {
-        Logger.info("onEvent: " + message);
+        // Logger.info("onEvent: " + message);
         displayGae("onEvent");
         super.onEvent(message, context);
 

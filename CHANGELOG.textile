@@ -1,9 +1,10 @@
+template integration
+
 v0.6
 * fix precompiled mode
 * optimizations in controller enhancement
 * defensive programming (request=null, no profiling data, etc.)
-~ working on GAE integration
-~ working on template integration
+* support GAE
 * added more documentation
 * add tests for websockets
 * tested with play1.3rc1

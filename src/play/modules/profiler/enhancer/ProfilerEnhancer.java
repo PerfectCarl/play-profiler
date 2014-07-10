@@ -64,7 +64,9 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static String getAppstatsId() {
-        return "resp: " + getAppstatsIdFromResponse() + " req: " + getAppstatsIdFromRequest();
+        // return "resp: " + getAppstatsIdFromResponse() + " req: " +
+        // getAppstatsIdFromRequest();
+        return "";
     }
 
     private static String getAppstatsIdFromResponse() {

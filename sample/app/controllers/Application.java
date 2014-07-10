@@ -26,24 +26,21 @@ public class Application extends Controller {
     }
 
     public static void custom() {
-        Step step = MiniProfiler.step("database", "add data");
-        try {
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-            new Data(System.currentTimeMillis()).save();
-        } finally {
-            step.close();
-        }
-        step = MiniProfiler.step("database", "findAll");
+        Step step = MiniProfiler.step("database", "DB calls");
         List<Data> result;
+
         try {
+            new Data(System.currentTimeMillis()).save();
+            new Data(System.currentTimeMillis()).save();
+            new Data(System.currentTimeMillis()).save();
+            new Data(System.currentTimeMillis()).save();
+            new Data(System.currentTimeMillis()).save();
+
             result = Data.findAll();
         } finally {
             step.close();
         }
-        render(result);
+        render();
     }
 
     public static void welcome() {

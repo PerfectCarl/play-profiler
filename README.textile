@@ -1,11 +1,12 @@
 h1. profiler
 
-The @profiler@ module is a simple but effective mini-profiler for @Play 1.x@ inspired from "mini-profiler":http://miniprofiler.com/.
+The @profiler@ module is a simple but effective mini-profiler for @Play 1.2@ and @1.3@.
 
-A demo is "available":play-profiler.appspot.com (the complete source code is available at "github":https://github.com/PerfectCarl/play-profiler-demo-gae)
+A demo is "available":http://play-profiler.appspot.com (the complete source code is available at "github":https://github.com/PerfectCarl/play-profiler-demo-gae)
+
 !https://raw.githubusercontent.com/PerfectCarl/play-profiler/master/documentation/manual/profiler.PNG!
 
-The code is heavily based on alvin's "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core
+This project is heavily inspired from "mini-profiler":http://miniprofiler.com/ and java implementation done by alvin's "java-mini-profiler":https://github.com/alvins82/java-mini-profiler-core and 
 
 h2. Features
 
@@ -25,7 +26,28 @@ h3. Play internal monitoring
 
 The module displays Play internal monitor statistics (querying "Jamon":http://jamonapi.sourceforge.net/ data).
 
+h3. Custom code profiling
+
+You may profile your own code using @MiniProfiler@ class.
+
+bc.. import play.modules.profiler.MiniProfiler;
+import play.modules.profiler.Step;
+...
+
+    public static void custom() {
+        step = MiniProfiler.step("database", "DB calls");
+        List result;
+        try {
+            result = Data.findAll();
+        } finally {
+            step.close();
+        }
+        render(result);
+    }
+
 h3. Supports Google App Engine
+
+The profiler works with Google App Engine which hosts the "demo":http://play-profiler.appspot.com
 
 h2. Getting started
 
@@ -33,7 +55,7 @@ Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 0.5.1
+    - carl -> profiler 0.6
 repositories:        
     - githubModules:
         type: http
@@ -56,7 +78,7 @@ bc. <html>
 
 h2. Sample application
 
-A complete sample is available demonstrating the use of the module. 
+A "complete sample":https://github.com/PerfectCarl/play-profiler/tree/master/sample is available demonstrating the use of the module. 
 
 h2. How to build
 
@@ -69,3 +91,5 @@ Then open the zip file created in the @dist/@ folder and delete the following:
 * the @sample@ folder
 * the @eclipse@ folder
 * @lib/appengine*.jar@
+
+h2. "Changelog":https://github.com/PerfectCarl/play-profiler/blob/master/CHANGELOG.textile
