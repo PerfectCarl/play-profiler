@@ -17,6 +17,7 @@ import models.CallStat;
 import org.apache.commons.lang.StringUtils;
 
 import play.Logger;
+import play.Play;
 import play.modules.profiler.CacheProfilerService;
 import play.modules.profiler.Profile;
 import play.modules.profiler.ProfilerExtra;
@@ -93,7 +94,7 @@ public class ProfilerActions extends Controller {
     }
 
     private static ProfilerExtra getExtra() {
-        if (isGaeSdkInClasspath())
+        if (hasGaeModule())
         {
             Logger.info("isGaeSdkInClasspath");
             String classname = "com.google.appengine.tools.appstats.GaeProfilerExtra";
@@ -125,6 +126,11 @@ public class ProfilerActions extends Controller {
             // Nothing to do
         }
         return false;
+    }
+
+    public static boolean hasGaeModule()
+    {
+        return Play.modules.get("gae") != null;
     }
 
     private static double round(double value, int places) {
@@ -166,16 +172,17 @@ public class ProfilerActions extends Controller {
             name = StringUtils.removeEnd(name, ", ms.");
             Double calls = (Double) row[1];
             // If ProfilerActions takes less than 2ms, we hide it
-            if (calls > 0L)
-            {
-                Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
-                rpcInfoMap.put(name, rpcInfo);
+            if (StringUtils.isNotEmpty(name))
+                if (calls > 0L && !name.startsWith("ProfilerActions."))
+                {
+                    Map<String, Object> rpcInfo = new LinkedHashMap<String, Object>();
+                    rpcInfoMap.put(name, rpcInfo);
 
-                rpcInfo.put("totalCalls", calls);
+                    rpcInfo.put("totalCalls", calls);
 
-                // DecimalFormat df = new DecimalFormat("#.##");
-                rpcInfo.put("totalTime", round(duration, 2));
-            }
+                    // DecimalFormat df = new DecimalFormat("#.##");
+                    rpcInfo.put("totalTime", round(duration, 2));
+                }
             // Logger.info("duration: " + duration.getClass());
             // String r = "";
             // for (Object cell : row)
