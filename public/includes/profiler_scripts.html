@@ -34,6 +34,7 @@
 		</div>
 	
 	<div class="time">${(duration / 1000000).toFixed(2)}</div>
+	<div class="time">${percent} </div>
 	<div class="time">${(self / 1000000).toFixed(2)} </div>
 	<div class="time">${(offset / 1000000).toFixed(2)}</div>
 	{{if children.length}}
@@ -60,6 +61,7 @@
 			<div id="mp-req-profile-header">
 				<div class="name">Step</div>
 				<div class="time dotted" title="How long the step took">Duration (ms)</div>
+				<div class="time dotted" title="">%</div>
 				<div class="time dotted" title="The duration of this step, minus the duration of all the child steps. In effect, returns the time spent only in this step.">Self (ms)</div>
 				<div class="time dotted" title="The step's offset from the start of profiling">Offset (ms)</div>
 			</div>

@@ -70,8 +70,8 @@
 
 #mp-req #mp-req-profile { padding: 10px; border-bottom: 1px solid #CCCCCC; }
 #mp-req #mp-req-profile-header { border-bottom: 1px solid #EEEEEE; width: 100%; font-weight: bold; }
-#mp-req #mp-req-profile .name { display: inline-block; vertical-align: top; width: 50%; padding: 5px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
-#mp-req #mp-req-profile .time { display: inline-block; vertical-align: top; width: 15%; padding: 5px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+#mp-req #mp-req-profile .name { display: inline-block; vertical-align: top; width: 55%; padding: 5px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+#mp-req #mp-req-profile .time { display: inline-block; vertical-align: top; width: 10%; padding: 5px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 #mp-req #mp-req-profile-table ul, #mp-req-profile-table li { margin: 0; padding: 0; list-style: none; font-size: 1em; line-height: 1em; text-align: left; }
 
 #mp-req #mp-req-as { padding: 10px; }

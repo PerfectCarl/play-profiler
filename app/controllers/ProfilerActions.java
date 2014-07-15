@@ -51,6 +51,7 @@ public class ProfilerActions extends Controller {
                     if (rootProfile != null)
                     {
                         rootProfile.computeSelf();
+                        computePercent(rootProfile, rootProfile.getDuration());
                         request.put("profile", rootProfile);
 
                         Map<String, Object> appstatsMap =
@@ -93,6 +94,14 @@ public class ProfilerActions extends Controller {
         // ObjectMapper jsonMapper = new ObjectMapper();
         // jsonMapper.writeValue(resp.getOutputStream(), result);
 
+    }
+
+    private static void computePercent(Profile profile, long duration) {
+        double result = profile.getDuration() * 100.0 / duration;
+        profile.setPercent(Math.round(result));
+        for (Profile p : profile.getChildren()) {
+            computePercent(p, duration);
+        }
     }
 
     private static ProfilerExtra getExtra() {

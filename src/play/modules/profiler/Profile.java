@@ -47,6 +47,8 @@ public class Profile implements Serializable {
 
     private long self;
 
+    private long percent;
+
     public Profile(int id, String name, String tag) {
         this.id = id;
         this.name = name;
@@ -196,6 +198,14 @@ public class Profile implements Serializable {
             result -= p.duration;
         }
         self = result;
+    }
+
+    public long getPercent() {
+        return percent;
+    }
+
+    public void setPercent(long percent) {
+        this.percent = percent;
     }
 
 }

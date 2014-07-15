@@ -72,7 +72,9 @@ var MiniProfiler = ( function() {
             requestData[ 'mp-req-' + request.id ] = request;
             // Add the request to the display
             $( '#mp' ).show().append( $.tmpl( 'requestTemplate', {
-              type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
+				type : request.redirect ? 'redirect' : type, 
+				requestId : request.id, 
+				totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
             } ) );
           }
         }
@@ -100,7 +102,9 @@ var MiniProfiler = ( function() {
             requestData[ 'mp-req-' + request.id ] = request;
             // Add the request to the display
             $( '#mp' ).show().append( $.tmpl( 'requestTemplate', {
-              type : request.redirect ? 'redirect' : type, requestId : request.id, totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
+              type : request.redirect ? 'redirect' : type, 
+			  requestId : request.id, 
+			  totalTime : (request.profile == null)?0:( request.profile.duration / 1000000 ).toFixed( 2 )
             } ) );
           }
         }

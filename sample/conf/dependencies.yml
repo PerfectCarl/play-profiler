@@ -2,8 +2,8 @@
 
 require:
     - play
-#    - local-modules -> profiler 
-    - carl -> profiler 0.6.9.3
+    - local-modules -> profiler 
+#    - carl -> profiler 0.6.9.3
 
 repositories:        
     - playCustomModules:
