@@ -87,6 +87,8 @@ public class ProfilerPlugin extends PlayPlugin {
         // Logger.info("onEvent: " + message);
         // displayGae("onEvent");
         String name = message;
+        if ("JPASupport.objectPersisting".equals(message) || "JPASupport.objectPersisted".equals(message))
+            return;
         String type = " ";
         String[] strings = message.split("\\.");
         if (strings.length > 0)
@@ -160,8 +162,6 @@ public class ProfilerPlugin extends PlayPlugin {
                     step.close();
                 }
             }
-        super.onEvent(message, context);
-
     }
 
     @Override

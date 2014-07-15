@@ -224,36 +224,58 @@ public class ProfilerEnhancer extends Enhancer {
     }
 
     private static String load(String filepath) {
-        // Logger.info("Loading " + filepath);
-        // for (String m : Play.modules.keySet())
-        // {
-        // Logger.info("module :" + m + " " +
-        // Play.modules.get(m).getRealFile().getAbsolutePath());
-        // }
-        // The module is named play in development mode (local) but profiler
-        // one packaged.
-        VirtualFile mod = Play.modules.get("profiler");
-        if (mod == null)
-        {
-            mod = Play.modules.get("play");
-        }
-        VirtualFile vf = mod.child(filepath);
-        // VirtualFile vf =
-        // VirtualFile.fromRelativePath("modules/mini-profiler/" + filepath);
-        // File realFile = Play.getFile(filepath);
-
-        File realFile = vf.getRealFile();
-        String result = "";
         try {
-            result = FileUtils.readFileToString(realFile, "UTF-8");
-        } catch (IOException e) {
+            // Logger.info("Loading " + filepath);
+            // for (String m : Play.modules.keySet())
+            // {
+            // Logger.info("module :" + m + " " +
+            // Play.modules.get(m).getRealFile().getAbsolutePath());
+            // }
+            // The module is named play in development mode (local) but profiler
+            // one packaged.
+            VirtualFile mod = Play.modules.get("profiler");
+            if (mod == null)
+            {
+                mod = Play.modules.get("play");
+            }
+            // HACK till the following play 1.3 bug is not fixed
+            //
+            File realFile = null;
+            if (mod == null)
+            {
+                String name = "C:/Users/cran/Dropbox/docs/projects/github/play/play-profiler/"
+                        + filepath;
+                VirtualFile vf = VirtualFile.open(name);
+                realFile = vf.getRealFile();
+            }
+            else
+            {
+                VirtualFile vf = mod.child(filepath);
+                // VirtualFile vf =
+                // VirtualFile.fromRelativePath("modules/mini-profiler/" +
+                // filepath);
+                // File realFile = Play.getFile(filepath);
+
+                realFile = vf.getRealFile();
+            }
+            String result = "";
+            try {
+                result = FileUtils.readFileToString(realFile, "UTF-8");
+            } catch (IOException e) {
+                Logger.error("The profiler module can't read the file:" + filepath, e);
+                e.printStackTrace();
+            }
+
+            // result = result.replace("@@prefix@@", htmlIdPrefix);
+            // result = result.replace("@@baseURL@@", servletURL);
+
+            return result;
+        } catch (Exception e)
+        {
+            Logger.error("The profiler module can't load the file:" + filepath, e);
             e.printStackTrace();
+            return "";
         }
-
-        // result = result.replace("@@prefix@@", htmlIdPrefix);
-        // result = result.replace("@@baseURL@@", servletURL);
-
-        return result;
     }
 
     public static void addHeader(Request request, String name, String requestId) {
