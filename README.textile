@@ -55,7 +55,7 @@ Add the module to your application:
 
 bc. require:
     - play
-    - carl -> profiler 0.7
+    - carl -> profiler 0.6.9.3
 repositories:        
     - githubModules:
         type: http
